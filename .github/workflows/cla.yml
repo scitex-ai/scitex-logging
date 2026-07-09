@@ -1,5 +1,20 @@
 name: CLA Assistant
 
+# Reusable-workflow migration (2026-07-10 incident remediation, see
+# scitex-ai/scitex-stats PR #69 for the pilot pattern).
+# Triggers/permissions preserved verbatim from the prior local file.
+#
+# owner_allowlist is overridden below because this repo's allowlist
+# additionally includes "LLEmacs" (not part of the reusable workflow's
+# "bot*,ywatanabe1989" default).
+#
+# NOTE: the prior local file hardcoded the CLA document link to the
+# ecosystem-wide canonical https://github.com/ywatanabe1989/scitex-dev/
+# blob/main/CLA.md. The reusable workflow instead builds the doc URL from
+# the calling repo (${{ github.repository }}), so post-migration the link
+# resolves to this repo's own CLA.md — verified byte-identical in content
+# to scitex-dev's copy, so no substantive change for contributors.
+
 on:
   issue_comment:
     types: [created]
@@ -13,21 +28,8 @@ permissions:
   statuses: write
 
 jobs:
-  CLAssistant:
-    runs-on: ubuntu-latest
-    steps:
-      - name: CLA Assistant
-        uses: contributor-assistant/github-action@v2.6.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-        with:
-          path-to-signatures: "signatures/cla.json"
-          path-to-document: "https://github.com/ywatanabe1989/scitex-dev/blob/main/CLA.md"
-          branch: "cla-signatures"
-          allowlist: bot*,ywatanabe1989,LLEmacs
-          custom-allsigned-prcomment: |
-            Thank you for signing the SciTeX CLA. Your contribution can now be reviewed.
-          custom-notsigned-prcomment: |
-            Please sign the [SciTeX CLA](https://github.com/ywatanabe1989/scitex-dev/blob/main/CLA.md) before your contribution can be merged.
-            Comment `I have read and agree to the SciTeX CLA.` to sign.
+  call:
+    uses: scitex-ai/.github/.github/workflows/cla.yml@main
+    secrets: inherit
+    with:
+      owner_allowlist: "bot*,ywatanabe1989,LLEmacs"
