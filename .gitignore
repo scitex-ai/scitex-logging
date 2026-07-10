@@ -16,3 +16,4 @@ build/
 *.dat
 GITIGNORED/
 _sphinx_html/
+/.worktrees/
