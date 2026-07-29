@@ -113,24 +113,24 @@ class TestSciTeXConsoleFormatter:
         assert lines[0] == "INFO: Line 1"
 
     def test_internal_newlines_second_line_gets_prefix(self):
-        """Internal-newline message: second line also gets the level prefix."""
+        """Internal-newline message: second line carries the continuation mark."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("Line 1\nLine 2\nLine 3")
         # Act
         lines = formatter.format(record).split("\n")
         # Assert
-        assert lines[1] == "INFO: Line 2"
+        assert lines[1] == "INFO| Line 2"
 
     def test_internal_newlines_third_line_gets_prefix(self):
-        """Internal-newline message: third line also gets the level prefix."""
+        """Internal-newline message: third line carries the continuation mark."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("Line 1\nLine 2\nLine 3")
         # Act
         lines = formatter.format(record).split("\n")
         # Assert
-        assert lines[2] == "INFO: Line 3"
+        assert lines[2] == "INFO| Line 3"
 
     def test_combined_leading_and_internal_newlines_starts_with_newline(self):
         """Leading + internal newlines: output starts with `\\n`."""
@@ -143,7 +143,7 @@ class TestSciTeXConsoleFormatter:
         assert result.startswith("\n")
 
     def test_combined_newlines_first_payload_line_prefixed(self):
-        """Leading + internal newlines: first payload line gets prefix."""
+        """Leading + internal newlines: first payload line gets record prefix."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("\nFirst\nSecond")
@@ -152,15 +152,15 @@ class TestSciTeXConsoleFormatter:
         # Assert
         assert lines[1] == "INFO: First"
 
-    def test_combined_newlines_second_payload_line_prefixed(self):
-        """Leading + internal newlines: second payload line gets prefix."""
+    def test_combined_newlines_second_payload_line_marked_continuation(self):
+        """Leading + internal newlines: second payload line is a CONTINUATION."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("\nFirst\nSecond")
         # Act
         lines = formatter.format(record).split("\n")
         # Assert
-        assert lines[2] == "INFO: Second"
+        assert lines[2] == "INFO| Second"
 
     def test_empty_continuation_lines_remain_empty(self):
         """An internal blank line stays blank (no spurious `INFO:` prefix)."""
@@ -173,14 +173,32 @@ class TestSciTeXConsoleFormatter:
         assert lines[1] == ""
 
     def test_empty_continuation_lines_keep_neighbours_prefixed(self):
-        """Internal blank line: the line after it still gets the prefix."""
+        """Internal blank line: the line after it still gets the continuation mark."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("Line 1\n\nLine 3")
         # Act
         lines = formatter.format(record).split("\n")
         # Assert
-        assert lines[2] == "INFO: Line 3"
+        assert lines[2] == "INFO| Line 3"
+
+    def test_continuation_never_matches_a_fresh_record(self):
+        """THE INVARIANT: a continuation line must never look like a new record.
+
+        A consumer counting `^<LEVEL>: ` must count EVENTS, not paragraphs.
+        When continuations carried the identical `LEVEL: ` prefix, one 431-line
+        advisory banner parsed as 431 separate records downstream.
+        """
+        # Arrange
+        formatter = SciTeXConsoleFormatter()
+        record = _make_record("headline\nbody one\nbody two")
+        # Act
+        lines = formatter.format(record).split("\n")
+        # Assert
+        assert lines[0].endswith("headline")
+        for continuation in lines[1:]:
+            assert not continuation.startswith("INFO: ")
+        assert sum(1 for ln in lines if ln.startswith("INFO: ")) == 1
 
     def test_indent_level_two_applies_four_space_indent(self):
         """`record.indent = 2` with `indent_width=2` indents by 4 spaces."""

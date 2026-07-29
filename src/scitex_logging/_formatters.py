@@ -30,6 +30,13 @@ _force_color = os.getenv("SCITEX_LOGGING_FORCE_COLOR") or os.getenv(
 )
 FORCE_COLOR = _force_color.lower() in ("1", "true", "yes")
 
+# Delimiter marking a CONTINUATION line of a multi-line record, as opposed to
+# the `:` that marks a fresh record. Consumers parsing scitex output can rely on
+# this: a line matching `^<LEVEL>: ` is a new record; `^<LEVEL>| ` is a
+# continuation of the previous one. Exported so downstream parsers reference the
+# constant rather than hardcoding the glyph.
+CONTINUATION_DELIM = "|"
+
 # Available format templates
 FORMAT_TEMPLATES = {
     "minimal": "%(levelname)s: %(message)s",
@@ -106,12 +113,19 @@ class SciTeXConsoleFormatter(logging.Formatter):
         # Use parent formatter to apply template
         formatted = super().format(record)
 
-        # Handle internal newlines: each line gets the level prefix
+        # Handle internal newlines: each continuation line carries its level too,
+        # so severity survives interleaved or grepped output.
+        #
+        # The continuation marker uses `|` where a fresh record uses `:`, and the
+        # difference is load-bearing: a continuation MUST NOT match `^<LEVEL>: `.
+        # When both used `LEVEL: `, a multi-line record was lexically N records,
+        # so consumers counting `^WARN:` counted paragraphs instead of events —
+        # one 431-line advisory banner read as 431 findings downstream.
         if "\n" in formatted:
             lines = formatted.split("\n")
             # First line already has prefix from parent formatter
-            # Add prefix to each continuation line
-            prefix = f"{record.levelname}: "
+            # Add continuation marker to each subsequent line
+            prefix = f"{record.levelname}{CONTINUATION_DELIM} "
             formatted = (
                 lines[0]
                 + "\n"
