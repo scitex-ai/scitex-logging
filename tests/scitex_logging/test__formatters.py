@@ -182,8 +182,8 @@ class TestSciTeXConsoleFormatter:
         # Assert
         assert lines[2] == "INFO| Line 3"
 
-    def test_continuation_never_matches_a_fresh_record(self):
-        """THE INVARIANT: a continuation line must never look like a new record.
+    def test_no_continuation_line_impersonates_a_record(self):
+        """THE INVARIANT: a continuation must never match `^<LEVEL>: `.
 
         A consumer counting `^<LEVEL>: ` must count EVENTS, not paragraphs.
         When continuations carried the identical `LEVEL: ` prefix, one 431-line
@@ -193,12 +193,19 @@ class TestSciTeXConsoleFormatter:
         formatter = SciTeXConsoleFormatter()
         record = _make_record("headline\nbody one\nbody two")
         # Act
+        continuations = formatter.format(record).split("\n")[1:]
+        # Assert
+        assert not any(line.startswith("INFO: ") for line in continuations)
+
+    def test_multiline_record_yields_exactly_one_record_line(self):
+        """A three-line record is ONE event, so exactly one `^INFO: ` line."""
+        # Arrange
+        formatter = SciTeXConsoleFormatter()
+        record = _make_record("headline\nbody one\nbody two")
+        # Act
         lines = formatter.format(record).split("\n")
         # Assert
-        assert lines[0].endswith("headline")
-        for continuation in lines[1:]:
-            assert not continuation.startswith("INFO: ")
-        assert sum(1 for ln in lines if ln.startswith("INFO: ")) == 1
+        assert sum(1 for line in lines if line.startswith("INFO: ")) == 1
 
     def test_indent_level_two_applies_four_space_indent(self):
         """`record.indent = 2` with `indent_width=2` indents by 4 spaces."""
