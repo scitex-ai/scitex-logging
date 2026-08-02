@@ -91,14 +91,64 @@ class LazyStderrStreamHandler(logging.StreamHandler):
         return
 
 
+class LazyStdoutStreamHandler(logging.StreamHandler):
+    """``LazyStderrStreamHandler``'s twin, writing to ``sys.stdout``.
+
+    Same lazy-resolution rationale as the stderr handler above: the
+    stream is looked up per emit so the handler stays in lockstep with
+    ``contextlib.redirect_stdout``, pytest's ``capsys`` / ``capfd``, and
+    click's isolated streams.
+
+    Stdout exists as a separate destination because stderr and stdout
+    answer different questions. Diagnostics belong on stderr, where they
+    do not corrupt a pipeline. Output the user asked for — a result, a
+    status line they are reading — belongs on stdout, where it can be
+    piped, redirected, and read by another program. Routing the second
+    kind to stderr is what makes logging awkward to consume. See
+    :func:`scitex_logging.getConsole`.
+    """
+
+    def __init__(self, level=logging.NOTSET):
+        # `None` so the base initialiser does not pin a stream; the
+        # ``stream`` property overrides it per emit.
+        super().__init__(stream=None)
+        self.setLevel(level)
+
+    @property
+    def stream(self):  # type: ignore[override]
+        return sys.stdout
+
+    @stream.setter
+    def stream(self, _value):
+        # Intentionally ignore, so ``setStream`` cannot pin a stale
+        # reference. Mirrors LazyStderrStreamHandler.
+        return
+
+
 def create_console_handler(level=logging.INFO):
-    """Create a console handler with SciTeX formatting.
+    """Create a **stderr** handler with SciTeX formatting.
+
+    Named ``console`` for historical reasons; the stream is ``sys.stderr``.
+    For stdout, use :func:`create_stdout_handler` (or the higher-level
+    :func:`scitex_logging.getConsole`).
 
     Uses ``LazyStderrStreamHandler`` so the handler stays in sync with
     ``sys.stderr`` even when callers temporarily redirect it (capture
     helpers, click's isolated streams, etc.).
     """
     handler = LazyStderrStreamHandler(level=level)
+    handler.setFormatter(SciTeXConsoleFormatter())
+    return handler
+
+
+def create_stdout_handler(level=logging.INFO):
+    """Create a **stdout** handler with the same SciTeX formatting.
+
+    Identical formatting to :func:`create_console_handler` — same
+    ``SciTeXConsoleFormatter`` — so a line's appearance does not tell you
+    which stream it went to. Only the destination differs.
+    """
+    handler = LazyStdoutStreamHandler(level=level)
     handler.setFormatter(SciTeXConsoleFormatter())
     return handler
 
@@ -195,4 +245,9 @@ def get_default_log_path():
     return str(log_file)
 
 
-__all__ = ["create_console_handler", "create_file_handler", "get_default_log_path"]
+__all__ = [
+    "create_console_handler",
+    "create_file_handler",
+    "create_stdout_handler",
+    "get_default_log_path",
+]
