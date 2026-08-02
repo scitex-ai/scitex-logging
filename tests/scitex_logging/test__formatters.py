@@ -1,27 +1,31 @@
 # Add your tests here
-import importlib.util
 import logging
 import os
 
 import pytest
 
-# Import _formatters directly without triggering scitex_logging.__init__
-_formatters_path = os.path.join(
-    os.path.dirname(__file__),
-    "..",
-    "..",
-    "src",
-    "scitex_logging",
-    "_formatters.py",
-)
-spec = importlib.util.spec_from_file_location("_formatters", _formatters_path)
-_formatters = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(_formatters)
+# Imported as a normal submodule.
+#
+# This used to be an ``exec_module`` of the bare file, to avoid triggering
+# ``scitex_logging.__init__`` and its import-time ``configure()``. That
+# isolation was not real: twelve other test modules in this suite import
+# ``scitex_logging`` normally, so ``__init__`` runs in the same pytest
+# process regardless — the trick only gave THIS module its own instance.
+#
+# What it did do was silently forbid ``_formatters`` from importing
+# anything from its own package, because a file loaded outside its package
+# has no parent to resolve a relative import against. That constraint was
+# invisible until the level abbreviations were made single-source and
+# ``_formatters`` needed to read them from ``._levels``.
+#
+# Nothing here depends on a fresh module instance: the import-time
+# environment behaviour (FORCE_COLOR) is tested in a subprocess, which is
+# where it belongs.
+from scitex_logging import _formatters
 
 SciTeXConsoleFormatter = _formatters.SciTeXConsoleFormatter
 SciTeXFileFormatter = _formatters.SciTeXFileFormatter
 FORMAT_TEMPLATES = _formatters.FORMAT_TEMPLATES
-# Note: FORCE_COLOR is evaluated at module load time, so we test via subprocess
 
 
 def _make_record(msg, level=logging.INFO, levelname="INFO", name="test"):
@@ -275,11 +279,8 @@ class TestForceColor:
         script = (
             "import os\n"
             "os.environ['SCITEX_FORCE_COLOR'] = '1'\n"
-            "import importlib.util\n"
-            "spec = importlib.util.spec_from_file_location('_formatters',\n"
-            "    'src/scitex_logging/_formatters.py')\n"
-            "mod = importlib.util.module_from_spec(spec)\n"
-            "spec.loader.exec_module(mod)\n"
+            "import sys; sys.path.insert(0, 'src')\n"
+            "from scitex_logging import _formatters as mod\n"
             "print('FORCE_COLOR:', mod.FORCE_COLOR)\n"
         )
         # Act
@@ -360,11 +361,8 @@ class TestForceColor:
         script = (
             "import os\n"
             f"os.environ['SCITEX_FORCE_COLOR'] = '{value}'\n"
-            "import importlib.util\n"
-            "spec = importlib.util.spec_from_file_location('_formatters',\n"
-            "    'src/scitex_logging/_formatters.py')\n"
-            "mod = importlib.util.module_from_spec(spec)\n"
-            "spec.loader.exec_module(mod)\n"
+            "import sys; sys.path.insert(0, 'src')\n"
+            "from scitex_logging import _formatters as mod\n"
             "print('FORCE_COLOR:', mod.FORCE_COLOR)\n"
         )
         # Act
@@ -386,11 +384,8 @@ class TestForceColor:
         script = (
             "import os\n"
             f"os.environ['SCITEX_FORCE_COLOR'] = '{value}'\n"
-            "import importlib.util\n"
-            "spec = importlib.util.spec_from_file_location('_formatters',\n"
-            "    'src/scitex_logging/_formatters.py')\n"
-            "mod = importlib.util.module_from_spec(spec)\n"
-            "spec.loader.exec_module(mod)\n"
+            "import sys; sys.path.insert(0, 'src')\n"
+            "from scitex_logging import _formatters as mod\n"
             "print('FORCE_COLOR:', mod.FORCE_COLOR)\n"
         )
         # Act

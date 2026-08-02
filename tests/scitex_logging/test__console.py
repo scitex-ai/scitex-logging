@@ -89,25 +89,41 @@ def test_console_level_surface_matches_the_logger(_isolated_console_name):
     assert logger_methods == console_methods
 
 
-def test_console_formatting_matches_the_logger_formatting(
-    capsys, _isolated_console_name
+def test_console_formatting_matches_the_stderr_console_formatting(
+    _isolated_console_name,
 ):
     # Arrange
-    console = getConsole(_isolated_console_name)
-    # Deliberately NOT a child of the console logger: a `<console>.peer`
-    # name would propagate INTO the console's stdout handler and both
-    # lines would land on stdout, making this comparison pass for the
-    # wrong reason.
-    logger = getLogger("scitex.logging.formatting.peer")
-    logger.setLevel(logging.INFO)
+    #
+    # Compare the FORMATTERS on a shared record rather than comparing
+    # captured stdout against captured stderr. The stream-capture version
+    # of this test passed alone and failed in the full suite: pytest's
+    # logging plugin intercepts the stderr logger's records, so `capsys`
+    # sees an empty stderr and the comparison fails for a reason that has
+    # nothing to do with formatting. Formatting equality is the actual
+    # claim, so assert it directly — this also catches the regression
+    # that matters, someone handing getConsole a plain logging.Formatter.
+    from scitex_logging._handlers import create_console_handler
+
+    record = logging.LogRecord(
+        name="probe",
+        level=logging.INFO,
+        pathname="",
+        lineno=0,
+        msg="same shape",
+        args=(),
+        exc_info=None,
+    )
+    stdout_handler = getConsole(_isolated_console_name).handlers[0]
+    stderr_handler = create_console_handler()
 
     # Act
-    console.info("same shape")
-    logger.info("same shape")
-    captured = capsys.readouterr()
+    rendered = (
+        stdout_handler.formatter.format(record),
+        stderr_handler.formatter.format(record),
+    )
 
     # Assert
-    assert captured.out.strip() == captured.err.strip()
+    assert rendered[0] == rendered[1]
 
 
 def test_getConsole_returns_a_stdout_handler_not_a_stderr_one(_isolated_console_name):
