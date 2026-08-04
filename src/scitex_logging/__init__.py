@@ -132,6 +132,10 @@ from ._warnings import (
 
 # Re-export standard logging functions for compatibility
 getLogger = _logging.getLogger
+
+# `getLogger` writes to stderr; `getConsole` is its stdout counterpart,
+# with identical formatting. See `._console`.
+from ._console import getConsole  # noqa: E402
 _basicConfig = _logging.basicConfig
 _disable = _logging.disable
 
@@ -163,6 +167,7 @@ __all__ = [
     "__version__",
     # Core logging functions
     "getLogger",
+    "getConsole",
     # Log levels
     "DEBUG",
     "INFO",
