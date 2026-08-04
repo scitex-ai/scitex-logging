@@ -11,6 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 from ._formatters import SciTeXConsoleFormatter, SciTeXFileFormatter
+from ._print_capture import PrintCapture
 
 _PKG_SHORT = "logging"
 
@@ -116,7 +117,21 @@ class LazyStdoutStreamHandler(logging.StreamHandler):
 
     @property
     def stream(self):  # type: ignore[override]
-        return sys.stdout
+        stream = sys.stdout
+        # ``configure(capture_prints=True)`` — the DEFAULT — replaces
+        # ``sys.stdout`` with a tee that writes the real stdout *and* logs
+        # what it sees. Resolving to that tee would send every console line
+        # to stdout once and, via the log, to stderr again: the caller asked
+        # for one stream and would get two. ``propagate = False`` cannot
+        # prevent it, because the second copy never travels through the
+        # logger hierarchy — it re-enters through ``sys.stdout`` itself.
+        #
+        # So write past the tee, to the stdout it replaced. Lazy resolution
+        # is preserved: this still reads ``sys.stdout`` per emit, so
+        # ``redirect_stdout`` and pytest's ``capsys`` keep working.
+        if isinstance(stream, PrintCapture):
+            return stream.original_stdout
+        return stream
 
     @stream.setter
     def stream(self, _value):

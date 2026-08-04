@@ -137,4 +137,52 @@ def test_getConsole_returns_a_stdout_handler_not_a_stderr_one(_isolated_console_
     assert isinstance(console.handlers[0], LazyStdoutStreamHandler)
 
 
+# ``capture_prints=True`` is the DEFAULT of ``configure()``, and it swaps
+# ``sys.stdout`` for a tee that writes the real stdout *and* logs what it
+# sees — which would put every console line on stderr as well. `capsys`
+# cannot measure that honestly, because it replaces ``sys.stdout`` itself
+# and so changes the very thing under test. A subprocess with real pipes
+# is the only reading that means anything here.
+_CAPTURE_PRINTS_SCRIPT = """
+import scitex_logging as s
+s.configure(level="info", enable_file=False, enable_console=True, capture_prints=True)
+s.getConsole("scitex.console.capture_prints_probe").success("DELIVERABLE")
+"""
+
+
+def _run_console_under_print_capture():
+    """Return (stdout, stderr) of one console write with print capture on."""
+    import subprocess
+    import sys as _sys
+
+    completed = subprocess.run(
+        [_sys.executable, "-c", _CAPTURE_PRINTS_SCRIPT],
+        capture_output=True,
+        text=True,
+    )
+    return completed.stdout, completed.stderr
+
+
+def test_console_reaches_stdout_when_print_capture_is_enabled():
+    # Arrange
+    expected = "DELIVERABLE"
+
+    # Act
+    stdout, _ = _run_console_under_print_capture()
+
+    # Assert
+    assert expected in stdout
+
+
+def test_console_does_not_leak_to_stderr_when_print_capture_is_enabled():
+    # Arrange
+    unexpected = "DELIVERABLE"
+
+    # Act
+    _, stderr = _run_console_under_print_capture()
+
+    # Assert
+    assert unexpected not in stderr
+
+
 # EOF
