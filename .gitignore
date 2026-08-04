@@ -23,3 +23,4 @@ uv.lock
 *.dat
 GITIGNORED/
 _sphinx_html/
+/.worktrees/
