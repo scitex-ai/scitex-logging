@@ -16,6 +16,66 @@ __FILE__ = __file__
 import logging
 import sys
 
+from ._levels import (
+    CRITICAL,
+    DEBUG,
+    ERROR,
+    FAIL,
+    INFO,
+    LEVEL_ABBREVIATIONS,
+    SUCCESS,
+    WARNING,
+)
+
+# ---------------------------------------------------------------------------
+# Colour tables, derived rather than transcribed.
+#
+# ``COLOR_NAMES`` is the single source of truth for ANSI codes, and
+# ``_levels.LEVEL_ABBREVIATIONS`` is the single source of truth for level
+# names. ``_LEVEL_COLORS`` below is built from both, so neither an escape
+# sequence nor a level name is typed twice in this file. Previously the
+# per-level table hardcoded both — "SUCC": "\033[32m" repeated the name
+# from _levels AND the green from COLOR_NAMES — which meant a rename or a
+# palette change silently desynchronised and showed up only as a line
+# losing its colour.
+#
+# The tables live at module scope because a dict comprehension inside a
+# class body cannot see the class's other attributes.
+# ---------------------------------------------------------------------------
+COLOR_NAMES = {
+    "black": "\033[30m",
+    "red": "\033[31m",
+    "green": "\033[32m",
+    "yellow": "\033[33m",
+    "blue": "\033[34m",
+    "magenta": "\033[35m",
+    "cyan": "\033[36m",
+    "white": "\033[37m",
+    "grey": "\033[90m",
+    "light_red": "\033[91m",
+    "light_green": "\033[92m",
+    "light_yellow": "\033[93m",
+    "lightblue": "\033[94m",
+    "light_magenta": "\033[95m",
+    "light_cyan": "\033[96m",
+}
+
+# Which colour each level wears, named rather than escaped.
+LEVEL_COLOR_NAMES = {
+    DEBUG: "grey",
+    INFO: "grey",
+    SUCCESS: "green",
+    WARNING: "yellow",
+    FAIL: "light_red",
+    ERROR: "red",
+    CRITICAL: "magenta",
+}
+
+_LEVEL_COLORS = {
+    LEVEL_ABBREVIATIONS[_level]: COLOR_NAMES[_color_name]
+    for _level, _color_name in LEVEL_COLOR_NAMES.items()
+}
+
 # Global format configuration via environment variable
 # Options: default, minimal, detailed, debug, full
 # SCITEX_LOGGING_FORMAT=debug python script.py
@@ -30,6 +90,13 @@ _force_color = os.getenv("SCITEX_LOGGING_FORCE_COLOR") or os.getenv(
 )
 FORCE_COLOR = _force_color.lower() in ("1", "true", "yes")
 
+# Delimiter marking a CONTINUATION line of a multi-line record, as opposed to
+# the `:` that marks a fresh record. Consumers parsing scitex output can rely on
+# this: a line matching `^<LEVEL>: ` is a new record; `^<LEVEL>| ` is a
+# continuation of the previous one. Exported so downstream parsers reference the
+# constant rather than hardcoding the glyph.
+CONTINUATION_DELIM = "|"
+
 # Available format templates
 FORMAT_TEMPLATES = {
     "minimal": "%(levelname)s: %(message)s",
@@ -43,35 +110,12 @@ FORMAT_TEMPLATES = {
 class SciTeXConsoleFormatter(logging.Formatter):
     """Custom formatter with color support and configurable format."""
 
-    # ANSI color codes for log levels
-    COLORS = {
-        "DEBU": "\033[90m",  # Grey
-        "INFO": "\033[90m",  # Grey
-        "SUCC": "\033[32m",  # Green
-        "WARN": "\033[33m",  # Yellow
-        "FAIL": "\033[91m",  # Light Red
-        "ERRO": "\033[31m",  # Red
-        "CRIT": "\033[35m",  # Magenta
-    }
+    # ANSI code per level name, derived from _levels.LEVEL_ABBREVIATIONS
+    # and COLOR_NAMES. Kept as a class attribute for back-compat.
+    COLORS = _LEVEL_COLORS
 
     # Color name to ANSI code mapping
-    COLOR_NAMES = {
-        "black": "\033[30m",
-        "red": "\033[31m",
-        "green": "\033[32m",
-        "yellow": "\033[33m",
-        "blue": "\033[34m",
-        "magenta": "\033[35m",
-        "cyan": "\033[36m",
-        "white": "\033[37m",
-        "grey": "\033[90m",
-        "light_red": "\033[91m",
-        "light_green": "\033[92m",
-        "light_yellow": "\033[93m",
-        "lightblue": "\033[94m",
-        "light_magenta": "\033[95m",
-        "light_cyan": "\033[96m",
-    }
+    COLOR_NAMES = COLOR_NAMES
 
     RESET = "\033[0m"
 
@@ -106,12 +150,19 @@ class SciTeXConsoleFormatter(logging.Formatter):
         # Use parent formatter to apply template
         formatted = super().format(record)
 
-        # Handle internal newlines: each line gets the level prefix
+        # Handle internal newlines: each continuation line carries its level too,
+        # so severity survives interleaved or grepped output.
+        #
+        # The continuation marker uses `|` where a fresh record uses `:`, and the
+        # difference is load-bearing: a continuation MUST NOT match `^<LEVEL>: `.
+        # When both used `LEVEL: `, a multi-line record was lexically N records,
+        # so consumers counting `^WARN:` counted paragraphs instead of events —
+        # one 431-line advisory banner read as 431 findings downstream.
         if "\n" in formatted:
             lines = formatted.split("\n")
             # First line already has prefix from parent formatter
-            # Add prefix to each continuation line
-            prefix = f"{record.levelname}: "
+            # Add continuation marker to each subsequent line
+            prefix = f"{record.levelname}{CONTINUATION_DELIM} "
             formatted = (
                 lines[0]
                 + "\n"
