@@ -37,6 +37,14 @@ dev = [
     "pytest",
     "pytest-cov",
     "scitex-dev>=0.11.14",
+    # Registers scitex-dev's IO/PA rule categories. Without it the linter
+    # loads, reports success, and SILENTLY SKIPS STX-IO001-014 and
+    # STX-PA001-005 — every `open()`, `pickle.dump/load`, `np.load/save`,
+    # `pd.read_*` and `df.to_*` check. The CI audit said so on every run:
+    # "no IO/PA category rules registered ... are SILENTLY skipped".
+    # A green audit that never ran ~19 of its rules is a gate that cannot
+    # fail, so install the plugin rather than suppress or ignore the notice.
+    "scitex-io",
 ]
 docs = [
     "sphinx>=7.0",
