@@ -24,7 +24,7 @@ log.warning("low memory")
 ```python
 from scitex_logging import configure
 
-configure(level="INFO", enable_file=True)   # also writes to ./logs/<...>
+configure(level="INFO", enable_file=True)   # also writes to ~/.scitex/logging/runtime/
 ```
 
 `configure()` is idempotent — call it from your `main()` entry point.

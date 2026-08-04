@@ -1,27 +1,31 @@
 # Add your tests here
-import importlib.util
 import logging
 import os
 
 import pytest
 
-# Import _formatters directly without triggering scitex_logging.__init__
-_formatters_path = os.path.join(
-    os.path.dirname(__file__),
-    "..",
-    "..",
-    "src",
-    "scitex_logging",
-    "_formatters.py",
-)
-spec = importlib.util.spec_from_file_location("_formatters", _formatters_path)
-_formatters = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(_formatters)
+# Imported as a normal submodule.
+#
+# This used to be an ``exec_module`` of the bare file, to avoid triggering
+# ``scitex_logging.__init__`` and its import-time ``configure()``. That
+# isolation was not real: twelve other test modules in this suite import
+# ``scitex_logging`` normally, so ``__init__`` runs in the same pytest
+# process regardless — the trick only gave THIS module its own instance.
+#
+# What it did do was silently forbid ``_formatters`` from importing
+# anything from its own package, because a file loaded outside its package
+# has no parent to resolve a relative import against. That constraint was
+# invisible until the level abbreviations were made single-source and
+# ``_formatters`` needed to read them from ``._levels``.
+#
+# Nothing here depends on a fresh module instance: the import-time
+# environment behaviour (FORCE_COLOR) is tested in a subprocess, which is
+# where it belongs.
+from scitex_logging import _formatters
 
 SciTeXConsoleFormatter = _formatters.SciTeXConsoleFormatter
 SciTeXFileFormatter = _formatters.SciTeXFileFormatter
 FORMAT_TEMPLATES = _formatters.FORMAT_TEMPLATES
-# Note: FORCE_COLOR is evaluated at module load time, so we test via subprocess
 
 
 def _make_record(msg, level=logging.INFO, levelname="INFO", name="test"):
@@ -113,24 +117,24 @@ class TestSciTeXConsoleFormatter:
         assert lines[0] == "INFO: Line 1"
 
     def test_internal_newlines_second_line_gets_prefix(self):
-        """Internal-newline message: second line also gets the level prefix."""
+        """Internal-newline message: second line carries the continuation mark."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("Line 1\nLine 2\nLine 3")
         # Act
         lines = formatter.format(record).split("\n")
         # Assert
-        assert lines[1] == "INFO: Line 2"
+        assert lines[1] == "INFO| Line 2"
 
     def test_internal_newlines_third_line_gets_prefix(self):
-        """Internal-newline message: third line also gets the level prefix."""
+        """Internal-newline message: third line carries the continuation mark."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("Line 1\nLine 2\nLine 3")
         # Act
         lines = formatter.format(record).split("\n")
         # Assert
-        assert lines[2] == "INFO: Line 3"
+        assert lines[2] == "INFO| Line 3"
 
     def test_combined_leading_and_internal_newlines_starts_with_newline(self):
         """Leading + internal newlines: output starts with `\\n`."""
@@ -143,7 +147,7 @@ class TestSciTeXConsoleFormatter:
         assert result.startswith("\n")
 
     def test_combined_newlines_first_payload_line_prefixed(self):
-        """Leading + internal newlines: first payload line gets prefix."""
+        """Leading + internal newlines: first payload line gets record prefix."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("\nFirst\nSecond")
@@ -152,15 +156,15 @@ class TestSciTeXConsoleFormatter:
         # Assert
         assert lines[1] == "INFO: First"
 
-    def test_combined_newlines_second_payload_line_prefixed(self):
-        """Leading + internal newlines: second payload line gets prefix."""
+    def test_combined_newlines_second_payload_line_marked_continuation(self):
+        """Leading + internal newlines: second payload line is a CONTINUATION."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("\nFirst\nSecond")
         # Act
         lines = formatter.format(record).split("\n")
         # Assert
-        assert lines[2] == "INFO: Second"
+        assert lines[2] == "INFO| Second"
 
     def test_empty_continuation_lines_remain_empty(self):
         """An internal blank line stays blank (no spurious `INFO:` prefix)."""
@@ -173,14 +177,39 @@ class TestSciTeXConsoleFormatter:
         assert lines[1] == ""
 
     def test_empty_continuation_lines_keep_neighbours_prefixed(self):
-        """Internal blank line: the line after it still gets the prefix."""
+        """Internal blank line: the line after it still gets the continuation mark."""
         # Arrange
         formatter = SciTeXConsoleFormatter()
         record = _make_record("Line 1\n\nLine 3")
         # Act
         lines = formatter.format(record).split("\n")
         # Assert
-        assert lines[2] == "INFO: Line 3"
+        assert lines[2] == "INFO| Line 3"
+
+    def test_no_continuation_line_impersonates_a_record(self):
+        """THE INVARIANT: a continuation must never match `^<LEVEL>: `.
+
+        A consumer counting `^<LEVEL>: ` must count EVENTS, not paragraphs.
+        When continuations carried the identical `LEVEL: ` prefix, one 431-line
+        advisory banner parsed as 431 separate records downstream.
+        """
+        # Arrange
+        formatter = SciTeXConsoleFormatter()
+        record = _make_record("headline\nbody one\nbody two")
+        # Act
+        continuations = formatter.format(record).split("\n")[1:]
+        # Assert
+        assert not any(line.startswith("INFO: ") for line in continuations)
+
+    def test_multiline_record_yields_exactly_one_record_line(self):
+        """A three-line record is ONE event, so exactly one `^INFO: ` line."""
+        # Arrange
+        formatter = SciTeXConsoleFormatter()
+        record = _make_record("headline\nbody one\nbody two")
+        # Act
+        lines = formatter.format(record).split("\n")
+        # Assert
+        assert sum(1 for line in lines if line.startswith("INFO: ")) == 1
 
     def test_indent_level_two_applies_four_space_indent(self):
         """`record.indent = 2` with `indent_width=2` indents by 4 spaces."""
@@ -275,11 +304,8 @@ class TestForceColor:
         script = (
             "import os\n"
             "os.environ['SCITEX_FORCE_COLOR'] = '1'\n"
-            "import importlib.util\n"
-            "spec = importlib.util.spec_from_file_location('_formatters',\n"
-            "    'src/scitex_logging/_formatters.py')\n"
-            "mod = importlib.util.module_from_spec(spec)\n"
-            "spec.loader.exec_module(mod)\n"
+            "import sys; sys.path.insert(0, 'src')\n"
+            "from scitex_logging import _formatters as mod\n"
             "print('FORCE_COLOR:', mod.FORCE_COLOR)\n"
         )
         # Act
@@ -360,11 +386,8 @@ class TestForceColor:
         script = (
             "import os\n"
             f"os.environ['SCITEX_FORCE_COLOR'] = '{value}'\n"
-            "import importlib.util\n"
-            "spec = importlib.util.spec_from_file_location('_formatters',\n"
-            "    'src/scitex_logging/_formatters.py')\n"
-            "mod = importlib.util.module_from_spec(spec)\n"
-            "spec.loader.exec_module(mod)\n"
+            "import sys; sys.path.insert(0, 'src')\n"
+            "from scitex_logging import _formatters as mod\n"
             "print('FORCE_COLOR:', mod.FORCE_COLOR)\n"
         )
         # Act
@@ -386,11 +409,8 @@ class TestForceColor:
         script = (
             "import os\n"
             f"os.environ['SCITEX_FORCE_COLOR'] = '{value}'\n"
-            "import importlib.util\n"
-            "spec = importlib.util.spec_from_file_location('_formatters',\n"
-            "    'src/scitex_logging/_formatters.py')\n"
-            "mod = importlib.util.module_from_spec(spec)\n"
-            "spec.loader.exec_module(mod)\n"
+            "import sys; sys.path.insert(0, 'src')\n"
+            "from scitex_logging import _formatters as mod\n"
             "print('FORCE_COLOR:', mod.FORCE_COLOR)\n"
         )
         # Act

@@ -235,15 +235,46 @@ class TestGetDefaultLogPath:
         # Assert
         assert path.endswith(".log")
 
-    def test_get_default_log_path_contains_logs_directory(self):
-        """get_default_log_path nests the file under a `logs` directory."""
+    def test_get_default_log_path_contains_runtime_directory(self):
+        """get_default_log_path nests the file under the ``runtime/`` directory."""
         # Arrange
         from scitex_logging._handlers import get_default_log_path
 
         # Act
         path = get_default_log_path()
         # Assert
-        assert "logs" in path
+        assert "runtime" in path
+
+    def test_get_default_log_path_resolves_under_runtime_slash(self):
+        """Resolved pkg-runtime dir contains ``/runtime/`` before the filename."""
+        # Arrange
+        from scitex_logging._handlers import _get_pkg_runtime_dir
+
+        # Act
+        runtime_dir = _get_pkg_runtime_dir()
+        # Assert
+        assert "/runtime" in str(runtime_dir) or "\\runtime" in str(runtime_dir)
+
+    def test_get_default_log_path_respects_scitex_dir_env(self, request):
+        """``get_default_log_path`` honours the ``SCITEX_DIR`` env var."""
+        # Arrange
+        old_env = os.environ.get("SCITEX_DIR")
+        os.environ["SCITEX_DIR"] = "/tmp/stx-test-logging"
+
+        def _restore():
+            if old_env is None:
+                os.environ.pop("SCITEX_DIR", None)
+            else:
+                os.environ["SCITEX_DIR"] = old_env
+
+        request.addfinalizer(_restore)
+
+        from scitex_logging._handlers import get_default_log_path
+
+        # Act
+        path = get_default_log_path()
+        # Assert
+        assert path.startswith("/tmp/stx-test-logging/logging/runtime/")
 
 
 if __name__ == "__main__":

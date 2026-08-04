@@ -83,12 +83,9 @@ log.render("out.html")
 scitex_logging/
 ├── _config.py            ← `configure()` entry point + level registration
 ├── _levels.py            ← SUCCESS / FAIL custom log levels
-├── _tee.py               ← stdout/stderr Tee context-manager
-├── exceptions/           ← 30+ typed `SciTeXError` subclasses
-│   ├── _data.py          ← ShapeError, DTypeError, ...
-│   ├── _config.py        ← ConfigKeyError, ...
-│   └── _network.py       ← PDFDownloadError, ...
-├── warnings/             ← `warn_deprecated`, `warn_performance`
+├── _Tee.py               ← stdout/stderr Tee context-manager
+├── _errors.py            ← 30+ typed `SciTeXError` subclasses
+├── _warnings.py          ← `warn_deprecated`, `warn_performance`
 └── llm/                  ← Claude / LLM session-log parsers
 ```
 

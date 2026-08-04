@@ -290,7 +290,7 @@ debug_fmt = FORMAT_TEMPLATES['debug']
 
 ## File Logging
 
-Logs are written to `~/.scitex/logs/scitex-YYYY-MM-DD.log` by default.
+Logs are written to `~/.scitex/logging/runtime/scitex-YYYY-MM-DD.log` by default.
 
 ### Log Rotation
 

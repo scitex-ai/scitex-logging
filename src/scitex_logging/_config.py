@@ -79,7 +79,7 @@ def configure(
 
     Args:
         level: Log level (string or logging constant)
-        log_file: Path to log file (default: ~/.scitex/logs/scitex-YYYY-MM-DD.log)
+        log_file: Path to log file (default: ~/.scitex/logging/runtime/scitex-YYYY-MM-DD.log)
         enable_file: Whether to enable file logging
         enable_console: Whether to enable console logging
         capture_prints: Whether to capture print() statements to logs
