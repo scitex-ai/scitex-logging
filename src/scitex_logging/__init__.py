@@ -14,10 +14,10 @@ try:
 except ImportError:  # pragma: no cover — only on ancient Pythons
     __version__ = "0.0.0+local"
 
-import os
+import os as _os
 
 __FILE__ = __file__
-__DIR__ = os.path.dirname(__FILE__)
+__DIR__ = _os.path.dirname(__FILE__)
 # ----------------------------------------
 
 """Modular logging utilities for SciTeX.
@@ -135,8 +135,11 @@ getLogger = _logging.getLogger
 _basicConfig = _logging.basicConfig
 _disable = _logging.disable
 
-level_by_env = os.getenv("SCITEX_LOGGING_LEVEL", "INFO").upper()
-level_map = {
+# Import-time configuration scratch. Underscored because these are setup
+# details, not API — they were leaking into `dir(scitex_logging)` and reading
+# as public surface. Same `as _name` convention the imports above already use.
+_level_by_env = _os.getenv("SCITEX_LOGGING_LEVEL", "INFO").upper()
+_level_map = {
     "DEBU": DEBUG,
     "DEBUG": DEBUG,
     "INFO": INFO,
@@ -150,10 +153,10 @@ level_map = {
     "SUCCESS": SUCCESS,
     "FAIL": FAIL,
 }
-level = level_map.get(level_by_env, INFO)
+_level = _level_map.get(_level_by_env, INFO)
 
 # Auto-configure logging on import with file logging enabled, print capture disabled by default
-configure(level=level, enable_file=True, enable_console=True, capture_prints=False)
+configure(level=_level, enable_file=True, enable_console=True, capture_prints=False)
 
 # Export public API
 __all__ = [
@@ -232,5 +235,25 @@ __all__ = [
     "check_file_exists",
     "check_shape_compatibility",
 ]
+
+
+def __dir__() -> list[str]:
+    """Public surface of this module (PEP 562).
+
+    `__all__` alone does NOT control what a user sees: it governs
+    `from scitex_logging import *`, while IPython/Jupyter tab-completion and
+    `dir(scitex_logging)` read the module's actual namespace. So imports and
+    import-time scratch showed up as public API even though they were never
+    exported.
+
+    Defining `__dir__` makes the declared surface and the discoverable surface
+    the same thing — one answer to "what is public here", instead of two that
+    silently disagree.
+
+    Everything remains reachable by explicit attribute access; this narrows
+    discovery, not availability.
+    """
+    return sorted(__all__)
+
 
 # EOF
