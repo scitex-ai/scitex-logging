@@ -30,6 +30,16 @@ permissions:
 jobs:
   call:
     uses: scitex-ai/.github/.github/workflows/cla.yml@main
-    secrets: inherit
+    # NOT `secrets: inherit`. The triggers above are attacker-triggerable:
+    # anyone can comment on an issue or open a pull request, and unlike
+    # `pull_request`, both `issue_comment` and `pull_request_target` run in
+    # the BASE repo context with secrets available. `secrets: inherit` would
+    # forward every secret this repo holds into that job — the fleet PAT
+    # included — so an outsider's comment starts a job holding credentials it
+    # has no use for. Pass the one secret the callee declares as required,
+    # and nothing else: the blast radius of this workflow is then exactly the
+    # CLA signature token, not the repo's whole secret store.
+    secrets:
+      GH_PERSONAL_ACCESS_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
     with:
       owner_allowlist: "bot*,ywatanabe1989,LLEmacs"
