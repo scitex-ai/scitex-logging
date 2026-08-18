@@ -89,6 +89,38 @@ scitex_logging/
 └── llm/                  ← Claude / LLM session-log parsers
 ```
 
+### Where the error taxonomy lives — current state, not settled design
+
+`_errors.py` defines 32 exception classes. **18 of them name domains this
+package does not own:**
+
+| Classes | Domain that owns the concept |
+|---|---|
+| `ScholarError`, `SearchError`, `EnrichmentError`, `PDFDownloadError`, `DOIResolutionError`, `PDFExtractionError`, `BibTeXEnrichmentError`, `TranslatorError`, `AuthenticationError` | scitex-scholar |
+| `PlottingError`, `FigureNotFoundError`, `AxisError` | figrecipe / plt |
+| `StatsError`, `TestError` | scitex-stats |
+| `TemplateError`, `TemplateViolationError` | scitex-writer |
+| `NNError`, `ModelError` | ML / models |
+
+The remaining 14 — `SciTeXError` and the config, IO, data and path families —
+are the ones a logging package can reasonably own.
+
+That split is a real dependency inversion, not just untidiness: anything wanting
+to raise or catch `ScholarError` must import **scitex-logging**, so the logger
+becomes a hub every domain package depends on for its own vocabulary.
+
+**This is documented because it is true, not because it is intended.** These are
+published names — `from scitex_logging import ScholarError` works today — so
+relocating them is a *migration* (alias, deprecate, remove), not a rename, and
+the destination is a cross-package decision that has not been made. Three
+options are open, none obviously right: move each class to its owning package;
+move all of them to a shared errors package; or keep them here and make this the
+ecosystem's deliberate error home.
+
+Until that is decided, read the current layout as the status quo rather than a
+recommendation, and prefer catching the base `SciTeXError` over a
+foreign-domain subclass where you can.
+
 ## Demo
 
 ```mermaid
