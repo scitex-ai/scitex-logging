@@ -81,6 +81,49 @@ def getConsole(name: str | None = None, level: int = logging.INFO):
     return console
 
 
-__all__ = ["getConsole", "DEFAULT_CONSOLE_NAME"]
+class PlainConsole:
+    """A stdout writer with the console call surface but no level prefix.
+
+    Where output IS the product — a hook's protocol frame, a path a shell
+    consumes, a probe verdict a build script greps — an ``INFO: `` prefix
+    would corrupt the payload rather than clarify it. ``PlainConsole``
+    writes the message verbatim to stdout (plus newline), so protocol
+    frames keep byte-exact output while sharing the ``getConsole``
+    discovery pattern with levelled output.
+
+    This is NOT a general print hatch: human-facing status and diagnostics
+    belong on ``getLogger``/``getConsole``, which carry the level, the
+    aligned prefix and the searchable record the mandate exists for.
+    """
+
+    def __init__(self, name: str | None = None) -> None:
+        self._name = name or DEFAULT_CONSOLE_NAME
+
+    def emit(self, message: str) -> None:
+        """Write ``message`` verbatim to stdout, plus a trailing newline."""
+        import sys
+
+        sys.stdout.write(f"{message}\n")
+        sys.stdout.flush()
+
+    # Alias parity with the logger surface — all unprefixed.
+    print = emit
+    write = emit
+
+
+def getPlainConsole(name: str | None = None) -> PlainConsole:
+    """Return a prefix-free stdout writer for protocol-frame output.
+
+    Args:
+        name: Retained for call-site symmetry with :func:`getConsole`;
+            carried on the object but otherwise unused.
+
+    Returns:
+        A :class:`PlainConsole` writing verbatim lines to stdout.
+    """
+    return PlainConsole(name)
+
+
+__all__ = ["getConsole", "getPlainConsole", "PlainConsole", "DEFAULT_CONSOLE_NAME"]
 
 # EOF

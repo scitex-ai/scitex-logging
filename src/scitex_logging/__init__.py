@@ -134,8 +134,10 @@ from ._warnings import (
 getLogger = _logging.getLogger
 
 # `getLogger` writes to stderr; `getConsole` is its stdout counterpart,
-# with identical formatting. See `._console`.
-from ._console import getConsole  # noqa: E402
+# with identical formatting. `getPlainConsole` is the third destination:
+# prefix-free stdout for protocol frames (paths, verdicts) where a level
+# prefix would corrupt the payload. See `._console`.
+from ._console import getConsole, getPlainConsole  # noqa: E402
 _basicConfig = _logging.basicConfig
 _disable = _logging.disable
 
@@ -168,6 +170,7 @@ __all__ = [
     # Core logging functions
     "getLogger",
     "getConsole",
+    "getPlainConsole",
     # Log levels
     "DEBUG",
     "INFO",
