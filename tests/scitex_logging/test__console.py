@@ -186,3 +186,31 @@ def test_console_does_not_leak_to_stderr_when_print_capture_is_enabled():
 
 
 # EOF
+
+
+def test_plain_console_writes_verbatim_without_prefix(capsys):
+    # Arrange
+    from scitex_logging import getPlainConsole
+
+    plain = getPlainConsole("scitex.console.test.plain")
+
+    # Act
+    plain.emit("/worktrees/myagent")
+    captured = capsys.readouterr()
+
+    # Assert
+    assert captured.out == "/worktrees/myagent\n"
+
+
+def test_plain_console_never_touches_stderr(capsys):
+    # Arrange
+    from scitex_logging import getPlainConsole
+
+    plain = getPlainConsole("scitex.console.test.plain-stderr")
+
+    # Act
+    plain.emit("protocol frame")
+    captured = capsys.readouterr()
+
+    # Assert
+    assert captured.err == ""
