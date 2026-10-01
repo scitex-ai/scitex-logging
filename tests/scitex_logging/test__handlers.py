@@ -255,11 +255,11 @@ class TestGetDefaultLogPath:
         # Assert
         assert "/runtime" in str(runtime_dir) or "\\runtime" in str(runtime_dir)
 
-    def test_get_default_log_path_respects_scitex_dir_env(self, request):
+    def test_get_default_log_path_respects_scitex_dir_env(self, request, tmp_path):
         """``get_default_log_path`` honours the ``SCITEX_DIR`` env var."""
         # Arrange
         old_env = os.environ.get("SCITEX_DIR")
-        os.environ["SCITEX_DIR"] = "/tmp/stx-test-logging"
+        os.environ["SCITEX_DIR"] = str(tmp_path)
 
         def _restore():
             if old_env is None:
@@ -274,7 +274,7 @@ class TestGetDefaultLogPath:
         # Act
         path = get_default_log_path()
         # Assert
-        assert path.startswith("/tmp/stx-test-logging/logging/runtime/")
+        assert Path(path).parent == tmp_path / "logging" / "runtime"
 
 
 if __name__ == "__main__":

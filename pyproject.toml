@@ -36,7 +36,7 @@ dependencies = []
 dev = [
     "pytest",
     "pytest-cov",
-    "scitex-dev>=0.11.14",
+    "scitex-dev>=0.62.1",
     # Registers scitex-dev's IO/PA rule categories. Without it the linter
     # loads, reports success, and SILENTLY SKIPS STX-IO001-014 and
     # STX-PA001-005 — every `open()`, `pickle.dump/load`, `np.load/save`,

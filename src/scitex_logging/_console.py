@@ -36,6 +36,7 @@ from __future__ import annotations
 import logging
 
 from ._handlers import LazyStdoutStreamHandler, create_stdout_handler
+from ._print_capture import PrintCapture
 
 # Distinct from any application logger name, so attaching a stdout
 # handler here can never add stdout output to somebody's existing logger.
@@ -100,11 +101,17 @@ class PlainConsole:
         self._name = name or DEFAULT_CONSOLE_NAME
 
     def emit(self, message: str) -> None:
-        """Write ``message`` verbatim to stdout, plus a trailing newline."""
+        """Write a result to current stdout without capturing it as a log."""
         import sys
 
-        sys.stdout.write(f"{message}\n")
-        sys.stdout.flush()
+        stream = sys.stdout
+        # Print capture owns diagnostic duplication. A plain result must
+        # bypass only our wrappers, while respecting the current redirected
+        # stream and any foreign wrapper's own write/flush behavior.
+        while isinstance(stream, PrintCapture):
+            stream = stream.original_stdout
+        stream.write(f"{message}\n")
+        stream.flush()
 
     # Alias parity with the logger surface — all unprefixed.
     print = emit

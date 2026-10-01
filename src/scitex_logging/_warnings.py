@@ -206,7 +206,9 @@ def warn(
             _seen_warnings.add(module_key)
 
     # Emit via scitex.logging
-    logger = _logging.getLogger("scitex.warnings")
+    from . import getLogger
+
+    logger = getLogger("scitex.warnings")
     category_name = category.__name__
 
     # Format: "UnitWarning: message"

@@ -15,6 +15,9 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from pathlib import Path
+
+from scitex_logging import getPlainConsole
 
 
 def main() -> int:
@@ -93,12 +96,13 @@ def main() -> int:
     p_spa.add_argument("--open", action="store_true", help="Open in browser")
 
     args = parser.parse_args()
+    plain = getPlainConsole(__name__)
 
     if args.command == "spa":
         from ._spa import render_spa
 
         path = render_spa(args.output, args.claude_dir)
-        print(f"SPA: {path}")
+        plain.emit(f"SPA: {path}")
         if args.open:
             import subprocess
 
@@ -113,7 +117,7 @@ def main() -> int:
             output = str(Path(args.session).with_suffix("")) + "_scripts"
         tools = tuple(t.strip() for t in args.tools.split(","))
         path = export_scripts(args.session, output, tools=tools)
-        print(f"Scripts: {path}")
+        plain.emit(f"Scripts: {path}")
         if args.open:
             import subprocess
 
@@ -124,7 +128,7 @@ def main() -> int:
         from ._dashboard import render_dashboard
 
         path = render_dashboard(args.output, args.claude_dir)
-        print(f"Dashboard: {path}")
+        plain.emit(f"Dashboard: {path}")
         if args.open:
             import subprocess
 
@@ -143,12 +147,10 @@ def main() -> int:
             text = json.dumps([a.to_dict() for a in actions], indent=2)
 
         if args.output:
-            from pathlib import Path
-
             Path(args.output).write_text(text, encoding="utf-8")
-            print(f"Written: {args.output} ({len(actions)} actions)")
+            plain.emit(f"Written: {args.output} ({len(actions)} actions)")
         else:
-            print(text)
+            plain.emit(text)
         return 0
 
     from . import load, to_mermaid
@@ -160,17 +162,17 @@ def main() -> int:
         if output is None:
             output = str(session.path.with_suffix(".html"))
         path = session.render(output)
-        print(f"Rendered: {path}")
+        plain.emit(f"Rendered: {path}")
         if args.open:
             import subprocess
 
             subprocess.Popen(["xdg-open", str(path)])
 
     elif args.command == "summary":
-        print(json.dumps(session.summary(), indent=2))
+        plain.emit(json.dumps(session.summary(), indent=2))
 
     elif args.command == "dag":
-        print(to_mermaid(session))
+        plain.emit(to_mermaid(session))
 
     return 0
 
