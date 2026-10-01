@@ -9,6 +9,35 @@ from io import StringIO
 import pytest
 
 
+def _run_tee_open_failure(tmp_path, backend_setup=""):
+    import subprocess
+    from pathlib import Path
+
+    path = tmp_path / "missing-parent" / "test.log"
+    env = {
+        "PATH": str(Path(sys.executable).parent) + os.pathsep + os.defpath,
+        "SCITEX_DIR": str(tmp_path / "state"),
+        "TMPDIR": str(tmp_path),
+        "PYTHONDONTWRITEBYTECODE": "1",
+    }
+    script = (
+        "import sys\n"
+        "def guard(event,args):\n"
+        "    if event in {'socket.bind','socket.connect','socket.getaddrinfo'}:\n"
+        "        raise RuntimeError('Tee error fixture must remain offline')\n"
+        "sys.addaudithook(guard)\n"
+        "import scitex_logging as s\nimport logging\n"
+        "s.configure(level='error',enable_file=False,capture_prints=False)\n"
+        + backend_setup
+        + f"tee=s.Tee(sys.stdout,{str(path)!r},verbose=False)\n"
+        "sys.stdout.write('NONE\\n' if tee._log_file is None else 'OPEN\\n')\n"
+    )
+    result = subprocess.run([sys.executable, "-c", script], env=env, cwd=tmp_path,
+                            capture_output=True, text=True, timeout=30)
+    original = f"Failed to open log file {path}: [Errno 2] No such file or directory: '{path}'\n"
+    return result, original
+
+
 class TestTee:
     """Test Tee class."""
 
@@ -270,6 +299,44 @@ class TestTee:
         stored = tee._log_file
         # Assert
         assert stored is None
+
+    def test_tee_open_failure_is_a_levelled_public_logger_error(self, tmp_path):
+        # Arrange
+        setup = ""
+        # Act
+        result, original = _run_tee_open_failure(tmp_path, setup)
+        # Assert
+        assert (result.returncode, result.stdout, result.stderr) == (
+            0, "NONE\n", "ERRO: " + original,
+        )
+
+    def test_tee_open_failure_survives_a_real_failing_log_handler(self, tmp_path):
+        # Arrange
+        setup = (
+            "class BrokenHandler(logging.Handler):\n"
+            "    def emit(self,record): raise RuntimeError('handler failed')\n"
+            "logging.getLogger().handlers=[BrokenHandler()]\n"
+        )
+        # Act
+        result, original = _run_tee_open_failure(tmp_path, setup)
+        # Assert
+        assert (result.returncode, result.stdout, result.stderr) == (
+            0, "NONE\n", original,
+        )
+
+    def test_tee_open_failure_survives_a_real_failing_logger_constructor(self, tmp_path):
+        # Arrange
+        setup = (
+            "class BrokenLogger(logging.Logger):\n"
+            "    def __init__(self,*args,**kwargs): raise RuntimeError('logger failed')\n"
+            "logging.setLoggerClass(BrokenLogger)\n"
+        )
+        # Act
+        result, original = _run_tee_open_failure(tmp_path, setup)
+        # Assert
+        assert (result.returncode, result.stdout, result.stderr) == (
+            0, "NONE\n", original,
+        )
 
 
 class TestTeeFunction:

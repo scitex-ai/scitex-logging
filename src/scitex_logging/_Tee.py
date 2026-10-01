@@ -48,9 +48,9 @@ def _clean_path(path_string):
 
 def _get_logger():
     """Get logger lazily to avoid circular import during module initialization."""
-    import logging
+    from . import getLogger
 
-    return logging.getLogger(__name__)
+    return getLogger(__name__)
 
 
 class Tee:
@@ -66,8 +66,15 @@ class Tee:
                 stream_name = "stderr" if stream is sys.stderr else "stdout"
                 logger.debug(f"Tee [{stream_name}]: {log_path}")
         except Exception as e:
-            print(f"Failed to open log file {log_path}: {e}", file=sys.stderr)
             self._log_file = None
+            message = f"Failed to open log file {log_path}: {e}"
+            try:
+                _get_logger().error(message)
+            except Exception:
+                # Optional Tee logging must survive a broken logger/handler.
+                # Preserve the original current-stderr fallback independently
+                # of the backend that just failed to report this error.
+                sys.stderr.write(f"{message}\n")
         self._is_stderr = stream is sys.stderr
 
     def write(self, data: Any) -> None:
