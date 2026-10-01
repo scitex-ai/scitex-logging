@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex-logging"
-version = "0.2.1"
+version = "0.2.2"
 description = "Logging utilities for the SciTeX ecosystem"
 readme = "README.md"
 license = "AGPL-3.0-only"
@@ -36,7 +36,8 @@ dependencies = []
 dev = [
     "pytest",
     "pytest-cov",
-    "scitex-dev>=0.11.14",
+    "pytest-timeout>=2.1.0",
+    "scitex-dev>=0.62.1",
     # Registers scitex-dev's IO/PA rule categories. Without it the linter
     # loads, reports success, and SILENTLY SKIPS STX-IO001-014 and
     # STX-PA001-005 — every `open()`, `pickle.dump/load`, `np.load/save`,
@@ -76,6 +77,7 @@ packages = ["src/scitex_logging"]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = "-v --tb=short"
+markers = ["slow: longer Logger subprocess and formatting controls"]
 
 [tool.ruff]
 line-length = 88

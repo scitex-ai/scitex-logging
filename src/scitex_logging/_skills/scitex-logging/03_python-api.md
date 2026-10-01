@@ -48,7 +48,14 @@ from scitex_logging import (
 | Symbol | Purpose |
 |---|---|
 | `getLogger(name)` | Standard stdlib-compatible logger with SUCCESS / FAIL methods |
+| `getConsole(name, level)` | Formatted human output on stdout at the chosen level |
+| `getPlainConsole(name)` | Plain stdout results via `emit` / `write` / `print` |
 | `llm` | Pre-configured logger for LLM session traces |
+
+`getPlainConsole().emit(message)` adds one newline, honors the current
+redirected stdout and bypasses logger-owned print capture. Results stay
+independent of diagnostic thresholds. Ordinary printed diagnostics still
+follow `configure(capture_prints=True)`.
 
 ## Levels
 
