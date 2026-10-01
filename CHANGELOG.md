@@ -7,6 +7,26 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-10-02
+
+### Fixed
+
+- Keep PlainConsole results on the current stdout stream without routing
+  them through logger-owned PrintCapture wrappers. Preserve redirected and
+  foreign streams, nested capture and restoration, and ordinary diagnostics.
+- Route requested LLM CLI JSON, diagrams and artifact acknowledgements
+  through PlainConsole independently of diagnostic thresholds.
+- Acquire the canonical public logger lazily in Tee and warnings. Preserve
+  Tee's original stderr fallback when its file sink or logger fails.
+
+### Changed
+
+- Require the genuinely published Dev 0.62.1 auditor in contributor
+  environments so the canonical backend passes PS-220 without suppressions.
+- Verify the CI image digest before release execution, give Logger tests,
+  builds and publishing owned scratch and caches, and require the complete
+  declared test environment with RUN_E2E enabled.
+
 ## [0.2.0]
 
 ### Added

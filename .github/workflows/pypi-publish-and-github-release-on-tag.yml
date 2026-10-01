@@ -53,6 +53,8 @@ on:
 env:
   SCITEX_CI_APPTAINER: ${{ vars.SCITEX_CI_APPTAINER }}
   SCITEX_CI_SIF: ${{ vars.SCITEX_CI_SIF }}
+  SCITEX_CI_SIF_SHA256: ${{ vars.SCITEX_CI_SIF_SHA256 }}
+  RUN_E2E: "1"
 
 jobs:
   test:
@@ -79,9 +81,9 @@ jobs:
       # setup-python (the bare Spartan node has no Python tool cache; that step
       # failed "version not found for this OS"); no apt fd-install (fd is baked
       # in the SIF). exec-in-sif.sh apptainer-execs the reused ci-cpu.sif and
-      # run-in-sif.sh layers THIS (tagged) checkout + [all,dev] into a writable
-      # target, then runs pytest. fail-loud on a missing SIF/shim.
-      - name: Run tests in the reused CI SIF (apptainer exec — deps layered, not on the bare runner)
+      # run-in-sif.sh installs THIS (tagged) checkout + [all,dev] into a writable
+      # job-owned venv, then runs pytest, including clean subprocess fixtures.
+      - name: Run Logger tests in the verified CI SIF
         run: bash .github/ci/exec-in-sif.sh run-in-sif.sh ${{ matrix.python-version }}
 
   build:
@@ -107,7 +109,7 @@ jobs:
       # build-in-sif.sh installs the `build` frontend into a writable --target
       # inside the SIF, then `python -m build` → dist/. fail-loud on empty dist.
       - name: Build wheel + sdist in the CI SIF (apptainer exec)
-        run: bash .github/ci/exec-in-sif.sh build-in-sif.sh 3.12
+        run: bash .github/ci/exec-in-sif.sh build-in-sif.sh 3.12 "${{ steps.ver.outputs.version }}"
       # upload-artifact is a JS action — runs fine on the self-hosted runner.
       - uses: actions/upload-artifact@v4
         with:
@@ -158,7 +160,7 @@ jobs:
           VERSION="${{ needs.build.outputs.version }}"
           VERSION="${VERSION#v}"
           awk -v v="$VERSION" '
-            $0 ~ "^## \\[" v "\\]" {p=1; next}
+            index($0, "## [" v "]") == 1 {p=1; next}
             p && /^## \[/ {exit}
             p
           ' CHANGELOG.md > release-notes.md || true

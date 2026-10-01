@@ -48,11 +48,13 @@ fi
 echo "=== dist to publish ==="
 ls -l dist
 
-# --- writable scratch (compute-node HOME is RO inside the container) ---
+# --- fresh owned scratch bound over /tmp by the verified outer wrapper ---
 TMPDIR="/tmp/publish-scitex_logging-${GITHUB_RUN_ID:-0}-${GITHUB_RUN_ATTEMPT:-0}-$V"
 export TMPDIR
-rm -rf "$TMPDIR"
-mkdir -p "$TMPDIR/site" "$TMPDIR/uv-cache"
+rm -rf "${TMPDIR:?Logger publish scratch is empty}"
+mkdir -p "$TMPDIR/site" "$TMPDIR/uv-cache" "$TMPDIR/scitex" "$TMPDIR/pycache"
+export SCITEX_DIR="$TMPDIR/scitex"
+export PYTHONPYCACHEPREFIX="$TMPDIR/pycache"
 export UV_CACHE_DIR="$TMPDIR/uv-cache"
 export XDG_CACHE_HOME="$TMPDIR"
 export PIP_CACHE_DIR="$TMPDIR/pip-cache"
