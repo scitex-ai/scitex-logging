@@ -43,9 +43,12 @@ configuration behavior.
 
 The detector parses source without importing it. It follows import and
 assignment aliases, literal `builtins.print` access, literal `getattr`, and
-Rich console constructor/method aliases within lexical scopes. Unrelated
+Rich console constructor/method aliases within lexical scopes. Definition-time
+expressions are scanned in their enclosing scope; comprehensions and local
+bindings shadow outer aliases. Proved output fields are followed between
+methods of the same class. Unrelated
 methods named `print`, including the SciTeX plain-console adapter, are not
-classified as builtin or Rich printing. Dynamic imports, computed attribute
+classified as builtin or Rich printing. Nonliteral dynamic imports, computed attribute
 names, and runtime call-graph behavior are outside this static proof.
 
 The logging implementation needs stdlib logging to implement its public API.

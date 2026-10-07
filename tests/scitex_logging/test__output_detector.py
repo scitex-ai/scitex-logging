@@ -50,6 +50,9 @@ from scitex_logging._output_backend import owns_logging_backend
         "def show(emit=print):\n    emit('status')",
         "def show(*, emit=print):\n    emit('status')",
         "emit = lambda output=print: output('status')",
+        "for emit in [print]:\n    emit('status')",
+        "[emit('status') for emit in [print]]",
+        "[item for item in print('iterable')]",
         "def show(value=print('default')):\n    pass",
         "def show(*, value=print('default')):\n    pass",
         "@decorate(print('decorator'))\ndef show():\n    pass",
@@ -81,6 +84,10 @@ def test_forbidden_aliases_and_transports_are_reported(source):
         "import logging\ndef show(logging):\n    logging.getLogger('status')",
         "from builtins import print as emit\ndef show(emit):\n    emit('value')",
         "def show(print):\n    print('value')",
+        "import logging\ndef show():\n    for logging in adapters:\n        logging.getLogger('value')",
+        "import logging\ndef show():\n    with adapter() as logging:\n        logging.getLogger('value')",
+        "import logging\ndef show():\n    try:\n        pass\n    except Exception as logging:\n        logging.getLogger('value')",
+        "import logging\n[logging.getLogger('value') for logging in adapters]",
         "import logging\ndef show():\n    import scitex_logging as logging\n    logging.getLogger('status')",
         "import logging; logging.basicConfig()",
         "'print(\"example\")'",
@@ -111,6 +118,21 @@ def test_definition_expression_aliases_use_the_enclosing_scope():
     sites = find_output_calls(source)
     # Assert
     assert [(site.kind, site.call.lineno) for site in sites] == [("builtin print", 2)]
+
+
+def test_comprehension_binding_does_not_shadow_later_enclosing_calls():
+    # Arrange
+    source = (
+        "import logging\ndef show():\n"
+        "    values = [logging for logging in adapters]\n"
+        "    logging.getLogger('status')\n"
+    )
+    # Act
+    sites = find_output_calls(source)
+    # Assert
+    assert [(site.kind, site.call.lineno) for site in sites] == [
+        ("stdlib logging.getLogger", 4)
+    ]
 
 
 @pytest.mark.parametrize(

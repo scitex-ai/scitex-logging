@@ -20,7 +20,14 @@ class _OutputCall:
     call: ast.Call
 
 
-_SCOPES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)
+_COMPREHENSIONS = (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
+_SCOPES = (
+    ast.FunctionDef,
+    ast.AsyncFunctionDef,
+    ast.ClassDef,
+    ast.Lambda,
+    *_COMPREHENSIONS,
+)
 _CONSOLE = "rich.console.Console"
 _CONSOLE_INSTANCE = _CONSOLE + "()"
 _FORBIDDEN = {
@@ -66,6 +73,9 @@ def _scope_nodes(scope: ast.AST):
     def definition_expressions(node):
         # Definitions execute these expressions in their enclosing scope.
         # Nested body traversal must not drop them or inspect them twice.
+        if isinstance(node, _COMPREHENSIONS):
+            yield node.generators[0].iter
+            return
         yield from getattr(node, "decorator_list", ())
         if isinstance(node, ast.ClassDef):
             yield from node.bases
@@ -95,7 +105,18 @@ def _scope_nodes(scope: ast.AST):
         for child in ast.iter_child_nodes(node):
             yield from walk(child)
 
-    body = scope.body if not isinstance(scope, ast.Lambda) else [scope.body]
+    if isinstance(scope, _COMPREHENSIONS):
+        body = []
+        for index, generator in enumerate(scope.generators):
+            body.append(generator.target)
+            if index:
+                body.append(generator.iter)
+            body.extend(generator.ifs)
+        body.extend(
+            [scope.key, scope.value] if isinstance(scope, ast.DictComp) else [scope.elt]
+        )
+    else:
+        body = scope.body if not isinstance(scope, ast.Lambda) else [scope.body]
     for node in body:
         yield from walk(node)
 
@@ -113,6 +134,14 @@ def _assignment_bindings(target, value):
             yield name, value
 
 
+def _target_names(target):
+    return [
+        node.id
+        for node in ast.walk(target)
+        if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Store)
+    ]
+
+
 class _Bindings:
     def __init__(self, scope: ast.AST, parent: _Bindings | None):
         self.is_class = isinstance(scope, ast.ClassDef)
@@ -122,6 +151,14 @@ class _Bindings:
         self.nodes = list(_scope_nodes(scope))
         assignments = []
         annotations = []
+        if isinstance(scope, _COMPREHENSIONS):
+            for generator in scope.generators:
+                for name in _target_names(generator.target):
+                    self.origins.setdefault(name, set())
+                    self.parameters.add(name)
+                    if isinstance(generator.iter, (ast.List, ast.Tuple)) and parent:
+                        for item in generator.iter.elts:
+                            self.origins[name].update(parent.resolve(item))
         if isinstance(scope, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
             args = scope.args
             for argument in [
@@ -173,6 +210,18 @@ class _Bindings:
                             assignments.append((name, value))
                         if isinstance(node, ast.AnnAssign):
                             annotations.append((name, node.annotation))
+            elif isinstance(node, (ast.For, ast.AsyncFor)):
+                for name in _target_names(node.target):
+                    self.origins.setdefault(name, set())
+                    if isinstance(node.iter, (ast.List, ast.Tuple)):
+                        assignments.extend((name, item) for item in node.iter.elts)
+            elif isinstance(node, (ast.With, ast.AsyncWith)):
+                for item in node.items:
+                    if item.optional_vars is not None:
+                        for name in _target_names(item.optional_vars):
+                            self.origins.setdefault(name, set())
+            elif isinstance(node, ast.ExceptHandler) and node.name:
+                self.origins.setdefault(node.name, set())
             elif isinstance(
                 node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
             ):
