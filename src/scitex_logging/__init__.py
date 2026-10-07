@@ -161,8 +161,15 @@ _level_map = {
 }
 _level = _level_map.get(_level_by_env, INFO)
 
-# Auto-configure logging on import with file logging enabled, print capture disabled by default
-configure(level=_level, enable_file=True, enable_console=True, capture_prints=False)
+# Named loggers retain the SciTeX methods even in an embedding application.
+# A configured root belongs to that application: import must not replace its
+# handlers, level, or stdout capture. Keep the existing root's SciTeX method
+# enrichment, including getLogger().success/fail. Explicit configure() opts
+# into process-wide root reconfiguration.
+if _logging.getLogger().handlers:
+    _setup_logger_class()
+else:
+    configure(level=_level, enable_file=True, enable_console=True, capture_prints=False)
 
 # Export public API
 __all__ = [

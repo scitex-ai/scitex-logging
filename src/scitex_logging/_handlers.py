@@ -129,8 +129,8 @@ class LazyStdoutStreamHandler(logging.StreamHandler):
         # So write past the tee, to the stdout it replaced. Lazy resolution
         # is preserved: this still reads ``sys.stdout`` per emit, so
         # ``redirect_stdout`` and pytest's ``capsys`` keep working.
-        if isinstance(stream, PrintCapture):
-            return stream.original_stdout
+        while isinstance(stream, PrintCapture):
+            stream = stream.original_stdout
         return stream
 
     @stream.setter

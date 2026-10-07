@@ -27,8 +27,12 @@ from scitex_logging import getConsole, getLogger
 def _isolated_console_name(request):
     """Give each test its own console so handler state cannot leak."""
     name = f"scitex.console.test.{request.node.name}"
+    root = logging.getLogger()
+    previous_level = root.level
+    root.setLevel(logging.INFO)
     yield name
-    logging.getLogger(name).handlers.clear()
+    root.setLevel(previous_level)
+    getConsole(name).handlers.clear()
 
 
 def test_success_message_appears_on_stdout(capsys, _isolated_console_name):

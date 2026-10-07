@@ -77,6 +77,10 @@ log.render("out.html")
 
 </details>
 
+Use `getLogger()` for diagnostics, `getConsole()` for formatted stdout, and
+`getPlainConsole()` for exact result lines. See [stream behavior](docs/stream-behavior.md)
+for filtering, caller-owned streams, and configuration ownership.
+
 ## Architecture
 
 ```
