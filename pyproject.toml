@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex-logging"
-version = "0.2.2"
+version = "0.2.3"
 description = "Logging utilities for the SciTeX ecosystem"
 readme = "README.md"
 license = "AGPL-3.0-only"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 authors = [
     { name = "Yusuke Watanabe", email = "noreply@scitex.ai" },
 ]
@@ -24,6 +24,7 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -37,7 +38,7 @@ dev = [
     "pytest",
     "pytest-cov",
     "pytest-timeout>=2.1.0",
-    "scitex-dev>=0.62.1",
+    "scitex-dev>=0.62.4.dev0",
     # Registers scitex-dev's IO/PA rule categories. Without it the linter
     # loads, reports success, and SILENTLY SKIPS STX-IO001-014 and
     # STX-PA001-005 — every `open()`, `pickle.dump/load`, `np.load/save`,
@@ -88,7 +89,7 @@ markers = ["slow: longer Logger subprocess and formatting controls"]
 
 [tool.ruff]
 line-length = 88
-target-version = "py310"
+target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]

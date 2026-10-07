@@ -63,3 +63,18 @@ Older developer tooling cannot enforce mandatory filepath-aware plugins.
 Install the compatible logging/dev release pair when enabling this provider;
 missing or broken mandatory providers must fail visibly, rather than report a
 successful audit that skipped logging checks.
+
+The provider and caller-stream writer are introduced in logging 0.2.3.
+Logging's developer extra requires SciTeX dev 0.62.4.dev0 or later, containing
+the mandatory provider and filepath contracts. The coordinated source changes
+must be released together; older public Dev 0.62.3 is not that compatible
+engine. Before publication, install both locally built wheels together in an
+isolated environment. A private Dev candidate can use the standard
+`SETUPTOOLS_SCM_PRETEND_VERSION_FOR_SCITEX_DEV=0.62.4.dev0` build override,
+with its source commit recorded; this does not publish a release or create a
+Git tag.
+
+Logging's runtime supports Python 3.9 and later. The optional Dev toolchain has
+additional dependencies with their own Python minimums; testing the logging
+runtime and provider interface on Python 3.9 does not establish that Dev's
+entire dependency graph installs there.
