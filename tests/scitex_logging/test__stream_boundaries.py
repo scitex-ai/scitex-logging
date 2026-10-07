@@ -237,7 +237,7 @@ def test_import_preserves_preconfigured_root_and_stdout(tmp_path):
         "assert logging.getLogger() is root and s.getLogger() is root\n"
         "assert callable(root.success) and callable(root.fail)\n"
         "assert root.handlers==[handler] and root.level==logging.ERROR\n"
-        "assert handler.level==logging.WARNING and not handler._closed\n"
+        "assert handler.level==logging.WARNING and handler.close_calls==0\n"
         "assert sys.stdout is foreign\n"
         "root.success('SUPPRESSED_SUCCESS'); root.fail('SUPPRESSED_FAIL')\n"
         "root.error('DIAGNOSTIC')\n"
@@ -249,7 +249,12 @@ def test_import_preserves_preconfigured_root_and_stdout(tmp_path):
         before_import=(
             "original=sys.stdout; foreign=io.StringIO(); sys.stdout=foreign\n"
             "root=logging.getLogger(); destination=io.StringIO()\n"
-            "handler=logging.StreamHandler(destination)\n"
+            "class TrackedHandler(logging.StreamHandler):\n"
+            "    close_calls=0\n"
+            "    def close(self):\n"
+            "        self.close_calls+=1\n"
+            "        super().close()\n"
+            "handler=TrackedHandler(destination)\n"
             "handler.setLevel(logging.WARNING); root.addHandler(handler)\n"
             "root.setLevel(logging.ERROR)\n"
         ),
@@ -261,11 +266,12 @@ def test_explicit_configuration_closes_replaced_file_handler(tmp_path):
     result = _run(
         tmp_path,
         "s.configure(enable_file=False,capture_prints=False)\n"
-        "assert handler not in root.handlers and handler._closed\n"
-        "assert handler.stream is None\n"
+        "assert handler not in root.handlers\n"
+        "assert handler.stream is None and old_stream.closed\n"
         "assert root.level==logging.INFO and len(root.handlers)==1",
         before_import=(
             "root=logging.getLogger(); handler=logging.FileHandler('old.log')\n"
+            "old_stream=handler.stream\n"
             "root.addHandler(handler); root.setLevel(logging.WARNING)\n"
         ),
     )
