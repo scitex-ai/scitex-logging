@@ -14,7 +14,7 @@ from types import SimpleNamespace
 import pytest
 
 from scitex_logging._audit_plugin import get_plugin
-from scitex_logging._output.auditor import PRINT_FORBIDDEN_RULES, check_ps220_no_print
+from scitex_logging._output._auditor import PRINT_FORBIDDEN_RULES, check_ps220_no_print
 
 
 def _dev_linter_spi() -> bool:

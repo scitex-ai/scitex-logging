@@ -10,17 +10,17 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from .backend import owns_logging_backend
-from .detector import (
+from ._backend import owns_logging_backend
+from ._detector import (
     _output_calls as _output_calls,
 )
-from .detector import (
+from ._detector import (
     _OutputCall as _OutputCall,
 )
-from .detector import (
+from ._detector import (
     _src_files as _src_files,
 )
-from .detector import (
+from ._detector import (
     find_output_calls,
 )
 

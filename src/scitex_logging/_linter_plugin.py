@@ -5,8 +5,8 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from ._output.auditor import _FIX_HINT, PRINT_FORBIDDEN_RULES, find_output_calls
-from ._output.detector import source_repo
+from ._output._auditor import _FIX_HINT, PRINT_FORBIDDEN_RULES, find_output_calls
+from ._output._detector import source_repo
 
 
 def get_plugin() -> dict:
