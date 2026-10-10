@@ -17,6 +17,23 @@ from scitex_logging._audit_plugin import get_plugin
 from scitex_logging._output_auditor import PRINT_FORBIDDEN_RULES, check_ps220_no_print
 
 
+def _dev_linter_spi() -> bool:
+    # scitex-dev>=0.62.4.dev0 promotes Issue/ProviderReplacement to the
+    # public linter SPI; older releases raise ImportError at plugin load
+    # (the Dev loader warns and continues without our rules).
+    try:
+        from scitex_dev.linter.spi import Issue, Rule  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
+_requires_dev_linter_spi = pytest.mark.skipif(
+    not _dev_linter_spi(),
+    reason="needs scitex-dev>=0.62.4.dev0 linter SPI (Issue)",
+)
+
+
 @dataclass
 class Finding:
     rule: str
@@ -116,6 +133,7 @@ def test_runtime_and_project_factory_imports_do_not_import_dev(tmp_path):
     assert json.loads(result.stdout) == [] and result.stderr == ""
 
 
+@_requires_dev_linter_spi
 def test_linter_adapter_uses_public_spi_and_shared_detector(tmp_path):
     # Arrange
     from scitex_logging._linter_plugin import get_plugin as get_linter_plugin
@@ -139,6 +157,7 @@ def test_linter_adapter_uses_public_spi_and_shared_detector(tmp_path):
     ) == (True, True, "PS-220", "error", [("PS-220", 1)])
 
 
+@_requires_dev_linter_spi
 def test_project_and_linter_report_identical_primitive_locations(tmp_path):
     # Arrange
     from scitex_logging._linter_plugin import get_plugin as get_linter_plugin
@@ -162,6 +181,7 @@ def test_project_and_linter_report_identical_primitive_locations(tmp_path):
     )
 
 
+@_requires_dev_linter_spi
 def test_linter_adapter_keeps_repository_tests_outside_source_scope(tmp_path):
     # Arrange
     from scitex_logging._linter_plugin import get_plugin as get_linter_plugin
