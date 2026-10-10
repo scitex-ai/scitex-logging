@@ -18,6 +18,12 @@ import pytest
 CROSS_PACKAGE_IMPORTS: list[str] = [
     # scitex-logging has no module-level cross-package imports in src/.
     # The umbrella `scitex` only appears in README docstring examples.
+    # Function-level optional peer imports (lean installs work without
+    # scitex-dev; the Dev loader warns and continues when a plugin SPI
+    # is absent).
+    "scitex_dev._cli.audit._config",
+    "scitex_dev._cli.audit._project._exemption_config_errors",
+    "scitex_dev.linter.spi",
 ]
 # ===== END AUTO-GENERATED =====
 
@@ -27,8 +33,9 @@ def test_cross_package_import_resolves_module_name(module_name):
     """Importing a declared cross-package dependency yields a module object."""
     # Arrange
     name = module_name
-    # Act
-    module = pytest.importorskip(name)
+    # Act — skip on the ROOT so a peer rename is never silently skipped.
+    pytest.importorskip(name.split(".")[0])
+    module = importlib.import_module(name)
     # Assert
     assert module is not None
 
