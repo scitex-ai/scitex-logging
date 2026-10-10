@@ -44,11 +44,13 @@ def _run(tmp_path, body, *, before_import=""):
 def test_same_name_console_preserves_diagnostic_destination_and_file(
     tmp_path, console_first
 ):
+    # Arrange
     acquisition = (
         "console=s.getConsole('shared'); logger=s.getLogger('shared')"
         if console_first
         else "logger=s.getLogger('shared'); console=s.getConsole('shared')"
     )
+    # Act
     result = _run(
         tmp_path,
         "s.configure(log_file='records.log',capture_prints=False)\n"
@@ -60,6 +62,7 @@ def test_same_name_console_preserves_diagnostic_destination_and_file(
         "record=Path('records.log').read_text()\n"
         "assert 'DIAGNOSTIC' in record and 'RESULT' not in record\n",
     )
+    # Assert
     assert (result.stdout, result.stderr) == (
         "INFO: RESULT\n",
         "WARN: DIAGNOSTIC\n",
@@ -67,6 +70,8 @@ def test_same_name_console_preserves_diagnostic_destination_and_file(
 
 
 def test_default_console_tracks_root_and_disable_after_enabled_queries(tmp_path):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "s.configure(enable_file=False,capture_prints=False)\n"
@@ -83,6 +88,7 @@ def test_default_console_tracks_root_and_disable_after_enabled_queries(tmp_path)
         "console.error('DISABLED')\nlogging.disable(logging.NOTSET)\n"
         "assert console.isEnabledFor(logging.INFO)\nconsole.info('REENABLED')",
     )
+    # Assert
     assert (result.stdout, result.stderr) == (
         "INFO: FIRST\nERRO: ERROR\nINFO: LOWERED\nINFO: REENABLED\n",
         "",
@@ -90,15 +96,20 @@ def test_default_console_tracks_root_and_disable_after_enabled_queries(tmp_path)
 
 
 def test_new_console_respects_quiet_global_level(tmp_path):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "s.configure(level='error',enable_file=False,capture_prints=False)\n"
         "s.getConsole('new-quiet').info('SUPPRESSED')",
     )
+    # Assert
     assert (result.stdout, result.stderr) == ("", "")
 
 
 def test_explicit_console_level_survives_reacquisition_and_global_changes(tmp_path):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "s.configure(level='critical',enable_file=False,capture_prints=False)\n"
@@ -110,6 +121,7 @@ def test_explicit_console_level_survives_reacquisition_and_global_changes(tmp_pa
         "s.getConsole('explicit',level=logging.ERROR)\n"
         "console.info('SUPPRESSED_AGAIN')\nconsole.error('UPDATED')",
     )
+    # Assert
     assert (result.stdout, result.stderr) == (
         "INFO: EXPLICIT\nDEBU: LOCAL\nERRO: UPDATED\n",
         "",
@@ -117,6 +129,8 @@ def test_explicit_console_level_survives_reacquisition_and_global_changes(tmp_pa
 
 
 def test_configure_false_releases_capture_and_reuse_refreshes_redirect(tmp_path):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "from scitex_logging._print_capture import is_print_capture_enabled\n"
@@ -136,6 +150,7 @@ def test_configure_false_releases_capture_and_reuse_refreshes_redirect(tmp_path)
         "assert sys.stdout is original\n"
         "s.getPlainConsole().emit(json.dumps([first,b.getvalue()]))",
     )
+    # Assert
     assert (json.loads(result.stdout), result.stderr) == (
         ["A\nUNCAPTURED\n", "INFO: B\n"],
         "",
@@ -143,6 +158,8 @@ def test_configure_false_releases_capture_and_reuse_refreshes_redirect(tmp_path)
 
 
 def test_stop_preserves_foreign_redirect_and_inactive_wrapper_can_restart(tmp_path):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "from scitex_logging._print_capture import PrintCapture\n"
@@ -159,10 +176,13 @@ def test_stop_preserves_foreign_redirect_and_inactive_wrapper_can_restart(tmp_pa
         "capture.stop_capture()\nassert sys.stdout is original\n"
         "assert foreign.getvalue()==''",
     )
+    # Assert
     assert (result.stdout, result.stderr) == ("INACTIVE\nINFO: RESULT\n", "")
 
 
 def test_nested_console_and_out_of_order_capture_stop_preserve_stdout(tmp_path):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "from scitex_logging._print_capture import PrintCapture\n"
@@ -173,10 +193,13 @@ def test_nested_console_and_out_of_order_capture_stop_preserve_stdout(tmp_path):
         "outer.stop_capture()\nassert sys.stdout is inner\n"
         "inner.stop_capture()\nassert sys.stdout is original",
     )
+    # Assert
     assert (result.stdout, result.stderr) == ("INFO: NESTED\n", "")
 
 
 def test_reentering_same_capture_does_not_release_outer_context(tmp_path):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "from scitex_logging._print_capture import PrintCapture\n"
@@ -189,11 +212,14 @@ def test_reentering_same_capture_does_not_release_outer_context(tmp_path):
         "    s.getConsole('same-context').info('OUTER')\n"
         "assert sys.stdout is original and not capture.capturing",
     )
+    # Assert
     assert (result.stdout, result.stderr) == ("INNER\nINFO: OUTER\n", "")
 
 
 @pytest.mark.parametrize("flush", [False, True])
 def test_plain_console_caller_stream_and_flush_are_exact(tmp_path, flush):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "s.configure(level='critical',enable_file=False,capture_prints=True)\n"
@@ -206,6 +232,7 @@ def test_plain_console_caller_stream_and_flush_are_exact(tmp_path, flush):
         "s.getPlainConsole().emit(json.dumps([stream.getvalue(),"
         "stream.flushes,stream.original_stdout.getvalue()]))",
     )
+    # Assert
     assert (json.loads(result.stdout), result.stderr) == (
         ["Δ frame\n", int(flush), ""],
         "",
@@ -214,6 +241,8 @@ def test_plain_console_caller_stream_and_flush_are_exact(tmp_path, flush):
 
 @pytest.mark.parametrize("failure", ["write", "flush"])
 def test_plain_console_preserves_caller_stream_failures(tmp_path, failure):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "class Broken:\n"
@@ -228,10 +257,13 @@ def test_plain_console_preserves_caller_stream_failures(tmp_path, failure):
         "else:\n"
         "    raise AssertionError('output failure was suppressed')",
     )
+    # Assert
     assert (result.stdout, result.stderr) == ("", "")
 
 
 def test_import_preserves_preconfigured_root_and_stdout(tmp_path):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "assert logging.getLogger() is root and s.getLogger() is root\n"
@@ -259,10 +291,13 @@ def test_import_preserves_preconfigured_root_and_stdout(tmp_path):
             "root.setLevel(logging.ERROR)\n"
         ),
     )
+    # Assert
     assert (json.loads(result.stdout), result.stderr) == ("RESULT\n", "")
 
 
 def test_explicit_configuration_closes_replaced_file_handler(tmp_path):
+    # Arrange
+    # Act
     result = _run(
         tmp_path,
         "s.configure(enable_file=False,capture_prints=False)\n"
@@ -275,4 +310,5 @@ def test_explicit_configuration_closes_replaced_file_handler(tmp_path):
             "root.addHandler(handler); root.setLevel(logging.WARNING)\n"
         ),
     )
+    # Assert
     assert (result.stdout, result.stderr) == ("", "")

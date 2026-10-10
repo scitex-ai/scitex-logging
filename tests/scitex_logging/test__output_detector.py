@@ -308,20 +308,24 @@ def test_known_backend_modules_do_not_exempt_other_output(tmp_path, filename, so
 
 @pytest.mark.parametrize("change", ["name", "wiring", "subclass", "setup"])
 def test_partial_owner_identity_cannot_claim_backend_allowances(tmp_path, change):
-    # Arrange
+    # Arrange — one intent (break the named ownership link); a dispatch table
+    # selects the mutation so the parametrized body holds no branches.
     package = _owner(tmp_path)
-    if change == "name":
-        (tmp_path / "pyproject.toml").write_text('[project]\nname = "scitex-other"\n')
-    elif change == "wiring":
-        (package / "__init__.py").write_text(
+    mutations = {
+        "name": lambda: (tmp_path / "pyproject.toml").write_text(
+            '[project]\nname = "scitex-other"\n'
+        ),
+        "wiring": lambda: (package / "__init__.py").write_text(
             _INIT.replace("getLogger = _logging.getLogger", "getLogger = None")
-        )
-    elif change == "subclass":
-        (package / "_logger.py").write_text(_LOGGER.replace("logging.Logger", "object"))
-    else:
-        (package / "_logger.py").write_text(
+        ),
+        "subclass": lambda: (package / "_logger.py").write_text(
+            _LOGGER.replace("logging.Logger", "object")
+        ),
+        "setup": lambda: (package / "_logger.py").write_text(
             _LOGGER.replace("root.__class__ = SciTeXLogger", "pass")
-        )
+        ),
+    }
+    mutations[change]()
     # Act
     owner = owns_logging_backend(tmp_path)
     # Assert
