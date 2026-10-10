@@ -396,7 +396,7 @@ def find_output_calls(
     backend_owner: bool | None = None,
 ) -> list[_OutputCall]:
     """Shared strict detector, with individually proved logger backend calls."""
-    from ._output_backend import is_logging_backend_call, owns_logging_backend
+    from .backend import is_logging_backend_call, owns_logging_backend
 
     tree, calls = _output_calls(text)
     if tree is None or repo is None or filepath is None:

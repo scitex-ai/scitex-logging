@@ -1,0 +1,22 @@
+# SciTeX Dev project configuration for scitex-logging.
+audit:
+  exemptions:
+    # PS-220 self-hosting: this package IS the logging tier. These four
+    # sites touch the stdlib ROOT logger mechanics (root handle, parent
+    # wiring, process-wide level) — not diagnostic output. Routing them
+    # through scitex_logging.getLogger would recurse into the very
+    # bootstrap being defined (console parent IS the root; configure()
+    # must set the real root level).
+    PS-220:
+      - path: src/scitex_logging/__init__.py
+        line: 169
+        reason: "reads the embedding application's existing root handlers at import so import never replaces them; the diagnostic surface itself uses scitex_logging.getLogger"
+      - path: src/scitex_logging/_config.py
+        line: 46
+        reason: "configure() sets the real process-wide root level; scitex_logging.getLogger cannot define the root it bootstraps"
+      - path: src/scitex_logging/_config.py
+        line: 55
+        reason: "get_level() falls back to the real root level; same bootstrap necessity as line 46"
+      - path: src/scitex_logging/_console.py
+        line: 96
+        reason: "console parent wiring must be the real stdlib root (propagation target), not a SciTeX logger; records stay on the named console"

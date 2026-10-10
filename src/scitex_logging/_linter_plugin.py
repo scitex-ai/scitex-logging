@@ -5,13 +5,20 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from ._output_auditor import _FIX_HINT, PRINT_FORBIDDEN_RULES, find_output_calls
-from ._output_detector import source_repo
+from ._output.auditor import _FIX_HINT, PRINT_FORBIDDEN_RULES, find_output_calls
+from ._output.detector import source_repo
 
 
 def get_plugin() -> dict:
     # SPI objects exist only at plugin activation, never at runtime import.
-    from scitex_dev.linter.spi import Issue, Rule
+    # Guarded: lean installs run without scitex-dev; the Dev loader warns
+    # and continues without our rules when activation fails here.
+    try:
+        from scitex_dev.linter.spi import Issue, Rule
+    except ImportError as exc:
+        raise ImportError(
+            "logging linter plugin needs scitex-dev (install scitex-logging[dev])"
+        ) from exc
 
     rule = Rule(
         id="PS-220",

@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from scitex_logging._output_auditor import _output_calls, _src_files, find_output_calls
-from scitex_logging._output_backend import owns_logging_backend
+from scitex_logging._output.auditor import _output_calls, _src_files, find_output_calls
+from scitex_logging._output.backend import owns_logging_backend
 
 
 @pytest.mark.parametrize(

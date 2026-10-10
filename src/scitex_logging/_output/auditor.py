@@ -10,17 +10,17 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from ._output_backend import owns_logging_backend
-from ._output_detector import (
+from .backend import owns_logging_backend
+from .detector import (
     _output_calls as _output_calls,
 )
-from ._output_detector import (
+from .detector import (
     _OutputCall as _OutputCall,
 )
-from ._output_detector import (
+from .detector import (
     _src_files as _src_files,
 )
-from ._output_detector import (
+from .detector import (
     find_output_calls,
 )
 
@@ -71,9 +71,15 @@ def _report_config_errors(repo: Path, config, violation_cls, out: list) -> None:
 
     where = str(repo / ".scitex/dev/config.yaml")
     if getattr(config, "exemption_errors", ()):
-        from scitex_dev._cli.audit._project._exemption_config_errors import (
-            report_exemption_config_errors,
-        )
+        try:
+            from scitex_dev._cli.audit._project._exemption_config_errors import (
+                report_exemption_config_errors,
+            )
+        except ImportError as exc:
+            raise ImportError(
+                "PS-220 exemption reporting needs scitex-dev "
+                "(install scitex-logging[dev])"
+            ) from exc
 
         report_exemption_config_errors(repo, config, "PS-220", emit)
     if getattr(config, "enforce_logging", None) is not None:
@@ -98,7 +104,13 @@ def check_ps220_no_print(
     """Append error-tier source findings without importing audited code."""
     repo = Path(repo).absolute()
     if config is None:
-        from scitex_dev._cli.audit._config import load_config
+        try:
+            from scitex_dev._cli.audit._config import load_config
+        except ImportError as exc:
+            raise ImportError(
+                "PS-220 config loading needs scitex-dev "
+                "(install scitex-logging[dev])"
+            ) from exc
 
         config = load_config(repo)
     _report_config_errors(repo, config, violation_cls, out)
