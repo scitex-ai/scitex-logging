@@ -166,7 +166,9 @@ _level = _level_map.get(_level_by_env, INFO)
 # handlers, level, or stdout capture. Keep the existing root's SciTeX method
 # enrichment, including getLogger().success/fail. Explicit configure() opts
 # into process-wide root reconfiguration.
-if _logging.getLogger().handlers:
+# logging.getLogger() with no name IS logging.root; spell the singleton
+# directly where root mechanics (not logger acquisition) are meant.
+if _logging.root.handlers:
     _setup_logger_class()
 else:
     configure(level=_level, enable_file=True, enable_console=True, capture_prints=False)

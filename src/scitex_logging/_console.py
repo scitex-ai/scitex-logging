@@ -93,7 +93,7 @@ def getConsole(name: str | None = None, level: int | None = None):
             # The requested name remains visible in records, but must not
             # share the diagnostic logger's handlers, level or propagation.
             console = _ConsoleLogger(console_name)
-            console.parent = logging.getLogger()
+            console.parent = logging.root
             console.manager = console.parent.manager
             console.propagate = False
             _CONSOLES[console_name] = console

@@ -43,7 +43,7 @@ def set_level(level: Union[str, int]):
         level = level_map.get(level.lower(), level)
 
     logging.getLogger().setLevel(level)
-    _GLOBAL_LEVEL = logging.getLogger().level
+    _GLOBAL_LEVEL = logging.root.level
 
     # Update all existing handlers
     for handler in logging.getLogger().handlers:
@@ -52,7 +52,7 @@ def set_level(level: Union[str, int]):
 
 def get_level():
     """Get current global log level."""
-    return _GLOBAL_LEVEL if _GLOBAL_LEVEL is not None else logging.getLogger().level
+    return _GLOBAL_LEVEL if _GLOBAL_LEVEL is not None else logging.root.level
 
 
 def enable_file_logging(enabled: bool = True):
