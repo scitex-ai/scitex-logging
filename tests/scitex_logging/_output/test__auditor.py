@@ -111,7 +111,7 @@ def test_unparseable_or_unreadable_source_fails_closed(tmp_path, text):
 
 def test_runtime_and_project_factory_imports_do_not_import_dev(tmp_path):
     # Arrange
-    source = Path(__file__).resolve().parents[2] / "src"
+    source = Path(__file__).resolve().parents[3] / "src"
     script = (
         f"import sys, json, logging; sys.path.insert(0, {str(source)!r})\n"
         "logging.basicConfig()\n"
@@ -201,7 +201,7 @@ def test_declared_entry_points_target_owned_factories():
         import tomllib
     except ImportError:
         import tomli as tomllib
-    root = Path(__file__).resolve().parents[2]
+    root = Path(__file__).resolve().parents[3]
     # Act
     points = tomllib.loads((root / "pyproject.toml").read_text())["project"][
         "entry-points"
