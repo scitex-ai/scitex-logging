@@ -41,7 +41,7 @@ dev = [
     # Bootstrap floor: 0.62.3 is the newest published Dev. The linter SPI
     # additions (Issue/ProviderReplacement) land in 0.62.4; the SPI-needing
     # tests skip explicitly until then (see _requires_dev_linter_spi in
-    # tests/scitex_logging/test__output_auditor.py). Re-raise to
+    # tests/scitex_logging/_output/test__auditor.py). Re-raise to
     # >=0.62.4.dev0 with the 0.2.4 follow-up once it publishes.
     "scitex-dev>=0.62.3",
     # Registers scitex-dev's IO/PA rule categories. Without it the linter
