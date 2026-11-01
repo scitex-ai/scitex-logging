@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex-logging"
-version = "0.2.3"
+version = "0.2.4"
 description = "Logging utilities for the SciTeX ecosystem"
 readme = "README.md"
 license = "AGPL-3.0-only"
@@ -79,6 +79,9 @@ scitex-logging = "scitex_logging"
 # Policy ownership stays here; developer tooling discovers and executes it.
 [project.entry-points."scitex_dev.audit.project"]
 scitex-logging = "scitex_logging._audit_plugin:get_plugin"
+
+[project.entry-points."scitex_dev.hooks"]
+scitex-logging = "scitex_logging._hook_rules:provide"
 
 [project.entry-points."scitex_dev.linter.plugins"]
 scitex-logging = "scitex_logging._linter_plugin:get_plugin"

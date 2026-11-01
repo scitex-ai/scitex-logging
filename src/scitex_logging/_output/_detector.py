@@ -36,6 +36,8 @@ _FORBIDDEN = {
     "pprint.pp": "pprint",
     "logging.getLogger": "stdlib logging.getLogger",
     "logging.Logger": "stdlib logging.Logger",
+    "logging.basicConfig": "stdlib logging.basicConfig",
+    "logging.StreamHandler": "stdlib logging.StreamHandler",
     "rich.print": "Rich Console.print",
     _CONSOLE + ".print": "Rich Console.print",
     _CONSOLE_INSTANCE + ".print": "Rich Console.print",
@@ -407,8 +409,7 @@ def find_output_calls(
         site
         for site in calls
         if not (
-            site.kind == "stdlib logging.getLogger"
-            and backend_owner
+            backend_owner
             and is_logging_backend_call(repo, filepath, tree, site.call)
         )
     ]
