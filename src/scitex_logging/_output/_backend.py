@@ -17,6 +17,7 @@ except ImportError:  # Python 3.9/3.10: declared conditional runtime dependency
 
 
 _BACKEND_STATEMENTS = {
+    ("_diagnostic.py", ("getDiagnostic",)): ("logger = logging.getLogger(name)",),
     ("_logger.py", ("setup_logger_class",)): ("root = logging.getLogger()",),
     ("_config.py", ("set_level",)): (
         "logging.getLogger().setLevel(level)",
@@ -27,7 +28,10 @@ _BACKEND_STATEMENTS = {
         "return _GLOBAL_LEVEL or logging.getLogger().level",
         "return _GLOBAL_LEVEL if _GLOBAL_LEVEL is not None else logging.getLogger().level",
     ),
-    ("_config.py", ("configure",)): ("root_logger = logging.getLogger()",),
+    ("_config.py", ("configure",)): (
+        "root_logger = logging.getLogger()",
+        "logging.basicConfig(level=level, handlers=handlers, force=True)",
+    ),
     ("_config.py", ("get_log_path",)): (
         "for handler in logging.getLogger().handlers:\n"
         "    if hasattr(handler, 'baseFilename'):\n"

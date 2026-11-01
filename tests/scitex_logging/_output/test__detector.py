@@ -89,7 +89,6 @@ def test_forbidden_aliases_and_transports_are_reported(source):
         "import logging\ndef show():\n    try:\n        pass\n    except Exception as logging:\n        logging.getLogger('value')",
         "import logging\n[logging.getLogger('value') for logging in adapters]",
         "import logging\ndef show():\n    import scitex_logging as logging\n    logging.getLogger('status')",
-        "import logging; logging.basicConfig()",
         "'print(\"example\")'",
     ],
 )

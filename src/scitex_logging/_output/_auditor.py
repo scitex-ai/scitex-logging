@@ -42,8 +42,8 @@ PRINT_FORBIDDEN_RULES = [
         "PS-220",
         "§2",
         "Every Python file under src must use scitex-logging for output; "
-        "builtin print/pprint, Rich Console.print and stdlib logger acquisition "
-        "are forbidden, including JSON, caller-owned streams and bundled "
+        "builtin print/pprint, Rich Console.print and stdlib logger acquisition/configuration "
+        "and hand-built console handlers are forbidden, including JSON, caller-owned streams and bundled "
         "scripts/tests/examples/docs. Only individually proved stdlib operations "
         "in the owning logger backend are permitted. " + _FIX_HINT,
         _DEFAULT_SEVERITY,

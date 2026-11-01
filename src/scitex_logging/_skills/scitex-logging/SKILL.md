@@ -60,3 +60,22 @@ No CLI, no MCP tools.
 ## Environment
 
 - [20_env-vars.md](20_env-vars.md) — SCITEX_* env vars read by scitex-logging at runtime
+
+
+## Enforcing output policy
+
+PS-220, the linter plugin, and native tool hooks share the leaf-owned detector
+in `_output/_detector.py`. Raw output, stdlib logger acquisition, basicConfig,
+and direct StreamHandler construction are rejected outside proved logger
+backend operations. Use `getDiagnostic(name)` when stderr must stay independent
+of an embedding caller's root handlers; this keeps the canonical format.
+
+The `scitex_dev.hooks` entry point provides executable checks and package-owned
+shell bindings. Install them using the generic `scitex-dev dev hooks install
+--provider scitex-logging --harness claude --config <settings>` path, or select
+Hermes and its profile config where Hermes' writer is installed. Discovery is
+not activation. Select the target interpreter with `--python`; both packages
+must be installed there. Hermes hook-command consent is separate and must not
+be silently granted by the installer. Post-tool reports cannot undo completed
+shell writes; native edits and subsequent shell calls are guarded, and the
+source auditor remains mandatory. See README for runnable commands and scope.

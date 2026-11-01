@@ -138,6 +138,7 @@ getLogger = _logging.getLogger
 # prefix-free stdout for protocol frames (paths, verdicts) where a level
 # prefix would corrupt the payload. See `._console`.
 from ._console import getConsole, getPlainConsole  # noqa: E402
+from ._diagnostic import getDiagnostic  # noqa: E402
 _basicConfig = _logging.basicConfig
 _disable = _logging.disable
 
@@ -179,6 +180,7 @@ __all__ = [
     # Core logging functions
     "getLogger",
     "getConsole",
+    "getDiagnostic",
     "getPlainConsole",
     # Log levels
     "DEBUG",
