@@ -2,7 +2,10 @@
 
 
 def provide():
-    from scitex_dev.hooks import HookRule
+    try:
+        from scitex_dev.hooks import HookRule
+    except ImportError as exc:
+        raise ImportError("Logging hook activation requires scitex-logging[dev]") from exc
 
     return [
         HookRule(
