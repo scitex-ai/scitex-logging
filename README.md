@@ -77,6 +77,10 @@ log.render("out.html")
 
 </details>
 
+Use `getLogger()` for diagnostics, `getConsole()` for formatted stdout, and
+`getPlainConsole()` for exact result lines. See [stream behavior](docs/stream-behavior.md)
+for filtering, caller-owned streams, and configuration ownership.
+
 ## Architecture
 
 ```
@@ -139,3 +143,34 @@ AGPL-3.0-only — see [LICENSE](LICENSE).
 <p align="center">
   <a href="https://scitex.ai" target="_blank"><img src="docs/scitex-icon-navy-inverted.png" alt="SciTeX" width="40"/></a>
 </p>
+
+
+## Enforced output policy
+
+The logging distribution owns PS-220's shared AST detector, auditor plugin,
+linter plugin, and executable `scitex_dev.hooks` provider. Besides raw print
+and stdlib logger acquisition, it rejects `logging.basicConfig` and direct
+`logging.StreamHandler` construction outside individually proved logger-backend
+operations. Importing a helper must not install an extra console handler.
+
+With a scitex-dev version exposing federated provider installation:
+
+```bash
+scitex-dev dev hooks install --provider scitex-logging --harness claude --config .claude/settings.local.json --dry-run
+scitex-dev dev hooks install --provider scitex-logging --harness claude --config .claude/settings.local.json
+```
+
+For Hermes use `--harness hermes --config <profile>/config.yaml` from an
+environment with Hermes' atomic configuration writer available. `--python`
+selects the interpreter **inside the target environment**; it must have both
+packages installed. Discovery alone does not install or activate a hook.
+Hermes' own first-use command consent also applies.
+
+Native Write/Edit/MultiEdit and Hermes write_file/patch are checked against the
+complete proposed source before execution. Shell/patch-tool changes are checked
+against tracked diffs and untracked Python source; a post-tool report cannot
+undo a completed shell command, while the next guarded shell invocation and
+the auditor enforce the resulting source. A missing required provider fails
+closed. Tests exercise actual entry-point discovery, subprocess exit status,
+and shared detector results. The detector is static; dynamically generated
+calls are outside its proof.

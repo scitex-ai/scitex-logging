@@ -27,8 +27,12 @@ from scitex_logging import getConsole, getLogger
 def _isolated_console_name(request):
     """Give each test its own console so handler state cannot leak."""
     name = f"scitex.console.test.{request.node.name}"
+    root = logging.getLogger()
+    previous_level = root.level
+    root.setLevel(logging.INFO)
     yield name
-    logging.getLogger(name).handlers.clear()
+    root.setLevel(previous_level)
+    getConsole(name).handlers.clear()
 
 
 def test_success_message_appears_on_stdout(capsys, _isolated_console_name):
@@ -342,7 +346,7 @@ def test_plain_boundary_real_click_json_result_respects_cli_isolation(
     tmp_path, capture
 ):
     # Arrange
-    script = f"import click\nfrom click.testing import CliRunner\noriginal=sys.stdout\ns.configure(level='info',enable_file=False,capture_prints={capture!r})\n@click.command()\n@click.option('--json','as_json',is_flag=True)\ndef cli(as_json):\n    assert as_json\n    s.getPlainConsole().emit(json.dumps({{'result':'owned-cli','ok':True}}))\nresult=CliRunner().invoke(cli,['--json'])\nassert result.exit_code==0,result.exception\nassert result.stderr==''\noriginal.write(result.stdout)"
+    script = f"import click,inspect\nfrom click.testing import CliRunner\noriginal=sys.stdout\ns.configure(level='info',enable_file=False,capture_prints={capture!r})\n@click.command()\n@click.option('--json','as_json',is_flag=True)\ndef cli(as_json):\n    assert as_json\n    s.getPlainConsole().emit(json.dumps({{'result':'owned-cli','ok':True}}))\nrunner_options={{'mix_stderr':False}} if 'mix_stderr' in inspect.signature(CliRunner).parameters else {{}}\nresult=CliRunner(**runner_options).invoke(cli,['--json'])\nassert result.exit_code==0,result.exception\nassert result.stderr==''\noriginal.write(result.stdout)"
     # Act
     result = _run_plain_boundary(tmp_path, script)
     # Assert

@@ -42,8 +42,8 @@ def set_level(level: Union[str, int]):
     if isinstance(level, str):
         level = level_map.get(level.lower(), level)
 
-    _GLOBAL_LEVEL = level
     logging.getLogger().setLevel(level)
+    _GLOBAL_LEVEL = logging.root.level
 
     # Update all existing handlers
     for handler in logging.getLogger().handlers:
@@ -52,7 +52,7 @@ def set_level(level: Union[str, int]):
 
 def get_level():
     """Get current global log level."""
-    return _GLOBAL_LEVEL or logging.getLogger().level
+    return _GLOBAL_LEVEL if _GLOBAL_LEVEL is not None else logging.root.level
 
 
 def enable_file_logging(enabled: bool = True):
@@ -76,6 +76,9 @@ def configure(
     backup_count: int = 5,
 ):
     """Configure logging for SciTeX with both console and file output.
+
+    An explicit call replaces and closes the root logger's existing
+    handlers. Importing SciTeX logging preserves an already configured root.
 
     Args:
         level: Log level (string or logging constant)
@@ -106,11 +109,6 @@ def configure(
     # Set global level
     set_level(level)
 
-    # Clear any existing handlers
-    root_logger = logging.getLogger()
-    for handler in root_logger.handlers[:]:
-        root_logger.removeHandler(handler)
-
     handlers = []
 
     # Add console handler if enabled
@@ -128,7 +126,8 @@ def configure(
         )
         handlers.append(file_handler)
 
-    # Configure basic logging with our handlers
+    # basicConfig(force=True) removes AND closes replaced handlers. Removing
+    # them first would hide them from that cleanup and leak open log files.
     logging.basicConfig(
         level=level,
         handlers=handlers,
@@ -140,6 +139,10 @@ def configure(
         from ._print_capture import enable_print_capture
 
         enable_print_capture()
+    else:
+        from ._print_capture import disable_print_capture
+
+        disable_print_capture()
 
 
 def get_log_path():

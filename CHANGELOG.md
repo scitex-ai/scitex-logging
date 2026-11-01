@@ -5,6 +5,12 @@ All notable changes to `scitex-logging` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.2.4] - 2026-11-01
+
+- Enforce PS-220 through logging-owned native edit/shell hooks plus the shared auditor and linter detector.
+- Reject ad hoc `logging.basicConfig` and direct stdlib console handlers outside proved backend operations.
+- Add `getDiagnostic()` for canonical, non-propagating stderr output in embedded protocol producers.
+
 ## [Unreleased]
 
 ## [0.2.2] - 2026-10-02

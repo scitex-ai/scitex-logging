@@ -138,6 +138,7 @@ getLogger = _logging.getLogger
 # prefix-free stdout for protocol frames (paths, verdicts) where a level
 # prefix would corrupt the payload. See `._console`.
 from ._console import getConsole, getPlainConsole  # noqa: E402
+from ._diagnostic import getDiagnostic  # noqa: E402
 _basicConfig = _logging.basicConfig
 _disable = _logging.disable
 
@@ -161,8 +162,17 @@ _level_map = {
 }
 _level = _level_map.get(_level_by_env, INFO)
 
-# Auto-configure logging on import with file logging enabled, print capture disabled by default
-configure(level=_level, enable_file=True, enable_console=True, capture_prints=False)
+# Named loggers retain the SciTeX methods even in an embedding application.
+# A configured root belongs to that application: import must not replace its
+# handlers, level, or stdout capture. Keep the existing root's SciTeX method
+# enrichment, including getLogger().success/fail. Explicit configure() opts
+# into process-wide root reconfiguration.
+# logging.getLogger() with no name IS logging.root; spell the singleton
+# directly where root mechanics (not logger acquisition) are meant.
+if _logging.root.handlers:
+    _setup_logger_class()
+else:
+    configure(level=_level, enable_file=True, enable_console=True, capture_prints=False)
 
 # Export public API
 __all__ = [
@@ -170,6 +180,7 @@ __all__ = [
     # Core logging functions
     "getLogger",
     "getConsole",
+    "getDiagnostic",
     "getPlainConsole",
     # Log levels
     "DEBUG",
