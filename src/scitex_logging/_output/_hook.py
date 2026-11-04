@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 from ._detector import find_output_calls, source_repo
+from ._inventory import git_paths
 
 
 def _inspect(path, text):
@@ -62,10 +63,10 @@ def check_payload(payload):
         ["diff", "--name-only", "--diff-filter=ACMR", "-z", "HEAD"],
         ["ls-files", "--others", "--exclude-standard", "-z"],
     ):
-        result = subprocess.run(["git", "-C", str(repo), *args], capture_output=True)
-        if result.returncode:
+        try:
+            paths.update(git_paths(repo, *args))
+        except OSError:
             return ["PS-220: cannot enumerate changed source"]
-        paths.update(result.stdout.decode().rstrip("\0").split("\0"))
     findings = []
     for relative in sorted(paths):
         path = repo / relative
