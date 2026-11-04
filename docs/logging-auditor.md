@@ -19,13 +19,22 @@ plugin activates. Its checker opts into filepath metadata with
 `accepts_filepath=True`; existing two-argument plugins retain their interface.
 Importing SciTeX logging or its project factory does not import SciTeX dev.
 
-Every Python file under `src/` is in scope, including bundled directories
+Every authored Python file under `src/` is in scope, including bundled directories
 named `tests`, `scripts`, `examples`, or `docs`. Repository directories outside
 `src/` are outside this source policy. Builtin `print`, `pprint`, Rich console
 printing, stdlib logger acquisition, and direct stdlib diagnostic calls fail.
 JSON payloads, explicit `file=` streams, and content-rendering function names
 do not exempt raw print. `noqa`, severity settings, category overrides,
 disabled rules, and skip lists cannot weaken the error tier.
+
+In a Git checkout the project auditor includes tracked and nonignored untracked
+source, including hidden files and tracked files matching ignore patterns.
+Ignored installed dependencies are excluded by Git rules without package-name
+exceptions. Linked worktrees and projects nested in a repository use their own
+`src/` subtree. Outside Git (including source archives), every existing Python
+file under `src/` remains in scope. Inventory paths stay lexical so symlinks
+cannot grant logger-backend ownership. Shell hooks retain changed-file scope;
+native edits check the proposed target rather than the entire inventory.
 
 Choose the logging primitive that matches the destination:
 

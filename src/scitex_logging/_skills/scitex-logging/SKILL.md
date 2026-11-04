@@ -79,3 +79,9 @@ must be installed there. Hermes hook-command consent is separate and must not
 be silently granted by the installer. Post-tool reports cannot undo completed
 shell writes; native edits and subsequent shell calls are guarded, and the
 source auditor remains mandatory. See README for runnable commands and scope.
+
+The project auditor discovers tracked and nonignored untracked Python in
+`src/`, retaining hidden authored files and tracked ignored files. Ignored
+installed dependencies are excluded using Git's rules; non-Git source archives
+retain the full source walk. Native hooks keep their proposed-target or
+changed-file scope, and lexical paths preserve backend ownership checks.

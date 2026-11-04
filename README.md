@@ -138,13 +138,6 @@ the umbrella with `pip install scitex[logging]` to use as
 
 AGPL-3.0-only — see [LICENSE](LICENSE).
 
----
-
-<p align="center">
-  <a href="https://scitex.ai" target="_blank"><img src="docs/scitex-icon-navy-inverted.png" alt="SciTeX" width="40"/></a>
-</p>
-
-
 ## Enforced output policy
 
 The logging distribution owns PS-220's shared AST detector, auditor plugin,
@@ -174,3 +167,16 @@ the auditor enforce the resulting source. A missing required provider fails
 closed. Tests exercise actual entry-point discovery, subprocess exit status,
 and shared detector results. The detector is static; dynamically generated
 calls are outside its proof.
+
+Project audits inventory tracked files plus nonignored untracked files under
+`src/`, including hidden authored Python and tracked files matching ignore
+patterns. Ignored dependencies installed there (for example by `npm ci`) are
+outside that Git inventory. Archives without Git retain the full `src/`
+walk. Native edits remain targeted; shell hooks inspect changed and untracked
+source rather than all unchanged tracked files.
+
+---
+
+<p align="center">
+  <a href="https://scitex.ai" target="_blank"><img src="docs/scitex-icon-navy-inverted.png" alt="SciTeX" width="40"/></a>
+</p>
