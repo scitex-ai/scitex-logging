@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "scitex-logging"
-version = "0.2.4"
+version = "0.2.5"
 description = "Logging utilities for the SciTeX ecosystem"
 readme = "README.md"
 license = "AGPL-3.0-only"
@@ -35,15 +35,12 @@ dependencies = ['tomli>=2.0; python_version < "3.11"']
 
 [project.optional-dependencies]
 dev = [
+    "hatchling>=1.0",
     "pytest",
     "pytest-cov",
     "pytest-timeout>=2.1.0",
-    # Bootstrap floor: 0.62.3 is the newest published Dev. The linter SPI
-    # additions (Issue/ProviderReplacement) land in 0.62.4; the SPI-needing
-    # tests skip explicitly until then (see _requires_dev_linter_spi in
-    # tests/scitex_logging/_output/test__auditor.py). Re-raise to
-    # >=0.62.4.dev0 with the 0.2.4 follow-up once it publishes.
-    "scitex-dev>=0.62.3",
+    # Published engine with mandatory filepath-aware provider contracts.
+    "scitex-dev>=0.62.16",
     # Registers scitex-dev's IO/PA rule categories. Without it the linter
     # loads, reports success, and SILENTLY SKIPS STX-IO001-014 and
     # STX-PA001-005 — every `open()`, `pickle.dump/load`, `np.load/save`,
@@ -65,9 +62,9 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/ywatanabe1989/scitex-logging"
-Repository = "https://github.com/ywatanabe1989/scitex-logging"
-Issues = "https://github.com/ywatanabe1989/scitex-logging/issues"
+Homepage = "https://github.com/scitex-ai/scitex-logging"
+Repository = "https://github.com/scitex-ai/scitex-logging"
+Issues = "https://github.com/scitex-ai/scitex-logging/issues"
 Documentation = "https://scitex-logging.readthedocs.io"
 
 [project.entry-points."scitex_dev.docs"]
@@ -85,6 +82,13 @@ scitex-logging = "scitex_logging._hook_rules:provide"
 
 [project.entry-points."scitex_dev.linter.plugins"]
 scitex-logging = "scitex_logging._linter_plugin:get_plugin"
+
+[tool.hatch.build]
+artifacts = [
+    "src/scitex_logging/_sphinx_html/**",
+    "!**/.doctrees/**",
+    "!**/.buildinfo",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/scitex_logging"]

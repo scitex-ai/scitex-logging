@@ -41,20 +41,7 @@ autodoc_default_options = {
     "exclude-members": "__weakref__",
 }
 
-autodoc_mock_imports = [
-    "fastmcp",
-    "click",
-    "h5py",
-    "zarr",
-    "torch",
-    "scipy",
-    "matplotlib",
-    "PIL",
-    "cv2",
-    "plotly",
-    "pandas",
-    "numpy",
-]
+autodoc_mock_imports = []
 
 autosummary_generate = True
 
@@ -97,7 +84,7 @@ html_short_title = project
 
 html_context = {
     "display_github": True,
-    "github_user": "ywatanabe1989",
+    "github_user": "scitex-ai",
     "github_repo": "scitex-logging",
     "github_version": "develop",
     "conf_py_path": "/docs/sphinx/",
