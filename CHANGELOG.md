@@ -5,13 +5,28 @@ All notable changes to `scitex-logging` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+## [0.2.5] - 2026-11-05
+
+### Fixed
+
+- Audit Git-owned Python source after frontend dependency installation without
+  treating ignored third-party code as package-authored code. Preserve tracked,
+  hidden and nonignored untracked source checks and targeted hook enforcement.
+- Require published Dev 0.62.16 for the optional development toolchain and
+  replace obsolete bootstrap instructions with actual installation guidance.
+- Ship bundled HTML documentation and its local assets in the wheel; omit
+  build caches. Build the docs from actual dependencies and current source.
+- Pin the generated audit gate to its checkout and guard against partial runs
+  silently omitting the gate.
+
 ## [0.2.4] - 2026-11-01
 
 - Enforce PS-220 through logging-owned native edit/shell hooks plus the shared auditor and linter detector.
 - Reject ad hoc `logging.basicConfig` and direct stdlib console handlers outside proved backend operations.
 - Add `getDiagnostic()` for canonical, non-propagating stderr output in embedded protocol producers.
 
-## [Unreleased]
 
 ## [0.2.2] - 2026-10-02
 

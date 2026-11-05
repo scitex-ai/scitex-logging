@@ -13,8 +13,8 @@ tags: [scitex-logging-installation]
 pip install scitex-logging
 ```
 
-Pure-Python; no required runtime dependencies (built on stdlib `logging`
-and `warnings`). Drop-in replacement for the stdlib loggers with extra
+Pure Python, built on stdlib `logging` and `warnings`. Python 3.9/3.10
+add the TOML parser dependency declared in the package metadata. Drop-in replacement for the stdlib loggers with extra
 SUCCESS / FAIL levels and an exception hierarchy.
 
 ## Verify
@@ -27,7 +27,7 @@ python -c "from scitex_logging import getLogger, configure, SciTeXError; print('
 ## Editable install (development)
 
 ```bash
-git clone https://github.com/ywatanabe1989/scitex-logging
+git clone https://github.com/scitex-ai/scitex-logging
 cd scitex-logging
 pip install -e '.[dev]'
 ```

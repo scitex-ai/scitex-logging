@@ -18,6 +18,6 @@ Development
 
 .. code-block:: bash
 
-   git clone https://github.com/ywatanabe1989/scitex-logging.git
+   git clone https://github.com/scitex-ai/scitex-logging.git
    cd scitex-logging
    pip install -e ".[dev]"
