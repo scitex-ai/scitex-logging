@@ -7,6 +7,9 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+- Isolate the file-logging gate in configuration tests so a disable control
+  cannot change later handler/path controls under distributed scheduling.
+
 ## [0.2.5] - 2026-11-05
 
 ### Fixed

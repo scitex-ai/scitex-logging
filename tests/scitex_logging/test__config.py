@@ -9,6 +9,19 @@ from pathlib import Path
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def _file_logging_state():
+    """Establish each control's default and restore the caller's global gate."""
+    from scitex_logging._config import enable_file_logging, is_file_logging_enabled
+
+    previous = is_file_logging_enabled()
+    enable_file_logging(True)
+    try:
+        yield
+    finally:
+        enable_file_logging(previous)
+
+
 class TestSetLevel:
     """Test set_level function."""
 
