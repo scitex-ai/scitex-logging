@@ -19,13 +19,22 @@ plugin activates. Its checker opts into filepath metadata with
 `accepts_filepath=True`; existing two-argument plugins retain their interface.
 Importing SciTeX logging or its project factory does not import SciTeX dev.
 
-Every Python file under `src/` is in scope, including bundled directories
+Every authored Python file under `src/` is in scope, including bundled directories
 named `tests`, `scripts`, `examples`, or `docs`. Repository directories outside
 `src/` are outside this source policy. Builtin `print`, `pprint`, Rich console
 printing, stdlib logger acquisition, and direct stdlib diagnostic calls fail.
 JSON payloads, explicit `file=` streams, and content-rendering function names
 do not exempt raw print. `noqa`, severity settings, category overrides,
 disabled rules, and skip lists cannot weaken the error tier.
+
+In a Git checkout the project auditor includes tracked and nonignored untracked
+source, including hidden files and tracked files matching ignore patterns.
+Ignored installed dependencies are excluded by Git rules without package-name
+exceptions. Linked worktrees and projects nested in a repository use their own
+`src/` subtree. Outside Git (including source archives), every existing Python
+file under `src/` remains in scope. Inventory paths stay lexical so symlinks
+cannot grant logger-backend ownership. Shell hooks retain changed-file scope;
+native edits check the proposed target rather than the entire inventory.
 
 Choose the logging primitive that matches the destination:
 
@@ -64,15 +73,18 @@ Install the compatible logging/dev release pair when enabling this provider;
 missing or broken mandatory providers must fail visibly, rather than report a
 successful audit that skipped logging checks.
 
-The provider and caller-stream writer are introduced in logging 0.2.3.
-Logging's developer extra requires SciTeX dev 0.62.4.dev0 or later, containing
-the mandatory provider and filepath contracts. The coordinated source changes
-must be released together; older public Dev 0.62.3 is not that compatible
-engine. Before publication, install both locally built wheels together in an
-isolated environment. A private Dev candidate can use the standard
-`SETUPTOOLS_SCM_PRETEND_VERSION_FOR_SCITEX_DEV=0.62.4.dev0` build override,
-with its source commit recorded; this does not publish a release or create a
-Git tag.
+Install the development toolchain with the logging package:
+
+```bash
+uv pip install 'scitex-logging[dev]'
+```
+
+The development extra requires published scitex-dev 0.62.16 or later, with the
+mandatory provider and filepath contracts. Runtime logging does not import
+scitex-dev. Developer tooling discovers the logging-owned auditor, linter and
+hook providers through their registered entry points. Qualify candidate wheels
+in an isolated environment before publication; never label an unreleased
+checkout as an existing public version.
 
 Logging's runtime supports Python 3.9 and later. The optional Dev toolchain has
 additional dependencies with their own Python minimums; testing the logging

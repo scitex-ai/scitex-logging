@@ -5,15 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scitex_logging._errors &mdash; SciTeX Logging v0.1.5</title>
+  <title>scitex_logging._errors &mdash; SciTeX Logging v0.2.5</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=59fadc99"></script>
+      <script src="../../_static/documentation_options.js?v=cb850272"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -56,6 +57,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/scitex_logging.html">scitex_logging</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getLogger"><code class="docutils literal notranslate"><span class="pre">getLogger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getConsole"><code class="docutils literal notranslate"><span class="pre">getConsole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getDiagnostic"><code class="docutils literal notranslate"><span class="pre">getDiagnostic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getPlainConsole"><code class="docutils literal notranslate"><span class="pre">getPlainConsole()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.configure"><code class="docutils literal notranslate"><span class="pre">configure()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.set_level"><code class="docutils literal notranslate"><span class="pre">set_level()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.get_level"><code class="docutils literal notranslate"><span class="pre">get_level()</span></code></a></li>
@@ -221,10 +225,10 @@
   <h1>Source code for scitex_logging._errors</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1"># Timestamp: &quot;2025-12-21&quot;</span>
+<span class="c1"># Timestamp: "2025-12-21"</span>
 <span class="c1"># File: /home/ywatanabe/proj/scitex-code/src/scitex/logging/_errors.py</span>
 
-<span class="sd">&quot;&quot;&quot;Error classes for SciTeX.</span>
+<span class="sd">"""Error classes for SciTeX.</span>
 
 <span class="sd">All SciTeX exceptions are defined here for unified error handling.</span>
 <span class="sd">Re-exported from scitex.logging for backwards compatibility.</span>
@@ -233,7 +237,7 @@
 <span class="sd">    from scitex_logging import SciTeXError, SaveError, LoadError</span>
 <span class="sd">    # or (backwards compatible)</span>
 <span class="sd">    from scitex_logging import SciTeXError, SaveError, LoadError</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -245,7 +249,7 @@
 <div class="viewcode-block" id="SciTeXError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.SciTeXError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SciTeXError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base Exception class for all SciTeX errors.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base Exception class for all SciTeX errors."""</span>
 
 <div class="viewcode-block" id="SciTeXError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.SciTeXError.__init__">[docs]</a>
@@ -255,7 +259,7 @@
         <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">suggestion</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize SciTeX error with detailed information.</span>
+<span class="w">        </span><span class="sd">"""Initialize SciTeX error with detailed information.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -265,23 +269,23 @@
 <span class="sd">            Additional context information (e.g., file paths, variable values)</span>
 <span class="sd">        suggestion : str, optional</span>
 <span class="sd">            Suggested fix or action</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">suggestion</span> <span class="o">=</span> <span class="n">suggestion</span>
 
         <span class="c1"># Build the full error message</span>
-        <span class="n">error_parts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;SciTeX Error: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+        <span class="n">error_parts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"SciTeX Error: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
-            <span class="n">error_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Context:&quot;</span><span class="p">)</span>
+            <span class="n">error_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Context:"</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">context</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">error_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">error_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">suggestion</span><span class="p">:</span>
-            <span class="n">error_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Suggestion: </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">error_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Suggestion: </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error_parts</span><span class="p">))</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">error_parts</span><span class="p">))</span></div>
 </div>
 
 
@@ -294,7 +298,7 @@
 <div class="viewcode-block" id="ConfigurationError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ConfigurationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfigurationError</span><span class="p">(</span><span class="n">SciTeXError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there are issues with SciTeX configuration.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when there are issues with SciTeX configuration."""</span>
 
     <span class="k">pass</span></div>
 
@@ -303,15 +307,15 @@
 <div class="viewcode-block" id="ConfigFileNotFoundError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ConfigFileNotFoundError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfigFileNotFoundError</span><span class="p">(</span><span class="n">ConfigurationError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a required configuration file is not found.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when a required configuration file is not found."""</span>
 
 <div class="viewcode-block" id="ConfigFileNotFoundError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ConfigFileNotFoundError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Configuration file not found: </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;filepath&quot;</span><span class="p">:</span> <span class="n">filepath</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Ensure the configuration file exists in ./config/ directory&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Configuration file not found: </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"filepath"</span><span class="p">:</span> <span class="n">filepath</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Ensure the configuration file exists in ./config/ directory"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -320,19 +324,19 @@
 <div class="viewcode-block" id="ConfigKeyError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ConfigKeyError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConfigKeyError</span><span class="p">(</span><span class="n">ConfigurationError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a required configuration key is missing.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when a required configuration key is missing."""</span>
 
 <div class="viewcode-block" id="ConfigKeyError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ConfigKeyError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">available_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;missing_key&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">}</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"missing_key"</span><span class="p">:</span> <span class="n">key</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">available_keys</span><span class="p">:</span>
-            <span class="n">context</span><span class="p">[</span><span class="s2">&quot;available_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">available_keys</span>
+            <span class="n">context</span><span class="p">[</span><span class="s2">"available_keys"</span><span class="p">]</span> <span class="o">=</span> <span class="n">available_keys</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Configuration key &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; not found&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Configuration key '</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' not found"</span><span class="p">,</span>
             <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Add &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; to your configuration file or check for typos&quot;</span><span class="p">,</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Add '</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">' to your configuration file or check for typos"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -346,7 +350,7 @@
 <div class="viewcode-block" id="IOError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.IOError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IOError</span><span class="p">(</span><span class="n">SciTeXError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for input/output related errors.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for input/output related errors."""</span>
 
     <span class="k">pass</span></div>
 
@@ -355,7 +359,7 @@
 <div class="viewcode-block" id="FileFormatError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.FileFormatError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FileFormatError</span><span class="p">(</span><span class="ne">IOError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when file format is not supported or incorrect.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when file format is not supported or incorrect."""</span>
 
 <div class="viewcode-block" id="FileFormatError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.FileFormatError.__init__">[docs]</a>
@@ -365,20 +369,20 @@
         <span class="n">expected_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">actual_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;filepath&quot;</span><span class="p">:</span> <span class="n">filepath</span><span class="p">}</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"filepath"</span><span class="p">:</span> <span class="n">filepath</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">expected_format</span><span class="p">:</span>
-            <span class="n">context</span><span class="p">[</span><span class="s2">&quot;expected_format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">expected_format</span>
+            <span class="n">context</span><span class="p">[</span><span class="s2">"expected_format"</span><span class="p">]</span> <span class="o">=</span> <span class="n">expected_format</span>
         <span class="k">if</span> <span class="n">actual_format</span><span class="p">:</span>
-            <span class="n">context</span><span class="p">[</span><span class="s2">&quot;actual_format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">actual_format</span>
+            <span class="n">context</span><span class="p">[</span><span class="s2">"actual_format"</span><span class="p">]</span> <span class="o">=</span> <span class="n">actual_format</span>
 
-        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;File format error for: </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"File format error for: </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">expected_format</span> <span class="ow">and</span> <span class="n">actual_format</span><span class="p">:</span>
-            <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; (expected: </span><span class="si">{</span><span class="n">expected_format</span><span class="si">}</span><span class="s2">, got: </span><span class="si">{</span><span class="n">actual_format</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" (expected: </span><span class="si">{</span><span class="n">expected_format</span><span class="si">}</span><span class="s2">, got: </span><span class="si">{</span><span class="n">actual_format</span><span class="si">}</span><span class="s2">)"</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">message</span><span class="p">,</span>
             <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Check the file extension and content format&quot;</span><span class="p">,</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Check the file extension and content format"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -387,15 +391,15 @@
 <div class="viewcode-block" id="SaveError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.SaveError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SaveError</span><span class="p">(</span><span class="ne">IOError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when saving data fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when saving data fails."""</span>
 
 <div class="viewcode-block" id="SaveError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.SaveError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Failed to save to </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;filepath&quot;</span><span class="p">:</span> <span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Check file permissions and disk space&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Failed to save to </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"filepath"</span><span class="p">:</span> <span class="n">filepath</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Check file permissions and disk space"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -404,15 +408,15 @@
 <div class="viewcode-block" id="LoadError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.LoadError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LoadError</span><span class="p">(</span><span class="ne">IOError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when loading data fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when loading data fails."""</span>
 
 <div class="viewcode-block" id="LoadError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.LoadError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Failed to load from </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;filepath&quot;</span><span class="p">:</span> <span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Verify the file exists and is not corrupted&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Failed to load from </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"filepath"</span><span class="p">:</span> <span class="n">filepath</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Verify the file exists and is not corrupted"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -426,7 +430,7 @@
 <div class="viewcode-block" id="ScholarError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ScholarError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ScholarError</span><span class="p">(</span><span class="n">SciTeXError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for scholar module errors.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for scholar module errors."""</span>
 
     <span class="k">pass</span></div>
 
@@ -435,15 +439,15 @@
 <div class="viewcode-block" id="SearchError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.SearchError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SearchError</span><span class="p">(</span><span class="n">ScholarError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when paper search fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when paper search fails."""</span>
 
 <div class="viewcode-block" id="SearchError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.SearchError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Search failed for query &#39;</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&#39; on </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Check your internet connection and API keys&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Search failed for query '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">' on </span><span class="si">{</span><span class="n">source</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"query"</span><span class="p">:</span> <span class="n">query</span><span class="p">,</span> <span class="s2">"source"</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Check your internet connection and API keys"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -452,15 +456,15 @@
 <div class="viewcode-block" id="EnrichmentError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.EnrichmentError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EnrichmentError</span><span class="p">(</span><span class="n">ScholarError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when paper enrichment fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when paper enrichment fails."""</span>
 
 <div class="viewcode-block" id="EnrichmentError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.EnrichmentError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paper_title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Failed to enrich paper: </span><span class="si">{</span><span class="n">paper_title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;paper_title&quot;</span><span class="p">:</span> <span class="n">paper_title</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Verify journal information is available&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Failed to enrich paper: </span><span class="si">{</span><span class="n">paper_title</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"paper_title"</span><span class="p">:</span> <span class="n">paper_title</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Verify journal information is available"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -469,15 +473,15 @@
 <div class="viewcode-block" id="PDFDownloadError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.PDFDownloadError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PDFDownloadError</span><span class="p">(</span><span class="n">ScholarError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when PDF download fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when PDF download fails."""</span>
 
 <div class="viewcode-block" id="PDFDownloadError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.PDFDownloadError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Failed to download PDF from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Check if the paper is open access&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Failed to download PDF from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"url"</span><span class="p">:</span> <span class="n">url</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Check if the paper is open access"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -486,15 +490,15 @@
 <div class="viewcode-block" id="DOIResolutionError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.DOIResolutionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DOIResolutionError</span><span class="p">(</span><span class="n">ScholarError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when DOI resolution fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when DOI resolution fails."""</span>
 
 <div class="viewcode-block" id="DOIResolutionError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.DOIResolutionError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doi</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Failed to resolve DOI: </span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;doi&quot;</span><span class="p">:</span> <span class="n">doi</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Verify the DOI is correct and try again&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Failed to resolve DOI: </span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"doi"</span><span class="p">:</span> <span class="n">doi</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Verify the DOI is correct and try again"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -503,15 +507,15 @@
 <div class="viewcode-block" id="PDFExtractionError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.PDFExtractionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PDFExtractionError</span><span class="p">(</span><span class="n">ScholarError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when PDF text extraction fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when PDF text extraction fails."""</span>
 
 <div class="viewcode-block" id="PDFExtractionError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.PDFExtractionError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Failed to extract text from PDF: </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;filepath&quot;</span><span class="p">:</span> <span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Ensure the PDF is not corrupted or encrypted&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Failed to extract text from PDF: </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"filepath"</span><span class="p">:</span> <span class="n">filepath</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Ensure the PDF is not corrupted or encrypted"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -520,15 +524,15 @@
 <div class="viewcode-block" id="BibTeXEnrichmentError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.BibTeXEnrichmentError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BibTeXEnrichmentError</span><span class="p">(</span><span class="n">ScholarError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when BibTeX enrichment fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when BibTeX enrichment fails."""</span>
 
 <div class="viewcode-block" id="BibTeXEnrichmentError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.BibTeXEnrichmentError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bibtex_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Failed to enrich BibTeX file: </span><span class="si">{</span><span class="n">bibtex_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;bibtex_file&quot;</span><span class="p">:</span> <span class="n">bibtex_file</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Check the BibTeX format and ensure all entries are valid&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Failed to enrich BibTeX file: </span><span class="si">{</span><span class="n">bibtex_file</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"bibtex_file"</span><span class="p">:</span> <span class="n">bibtex_file</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Check the BibTeX format and ensure all entries are valid"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -537,15 +541,15 @@
 <div class="viewcode-block" id="TranslatorError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.TranslatorError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TranslatorError</span><span class="p">(</span><span class="n">ScholarError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when Zotero translator operations fail.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when Zotero translator operations fail."""</span>
 
 <div class="viewcode-block" id="TranslatorError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.TranslatorError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">translator_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Translator error in </span><span class="si">{</span><span class="n">translator_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;translator&quot;</span><span class="p">:</span> <span class="n">translator_name</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Check translator compatibility and JavaScript environment&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Translator error in </span><span class="si">{</span><span class="n">translator_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"translator"</span><span class="p">:</span> <span class="n">translator_name</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Check translator compatibility and JavaScript environment"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -554,15 +558,15 @@
 <div class="viewcode-block" id="AuthenticationError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.AuthenticationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AuthenticationError</span><span class="p">(</span><span class="n">ScholarError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when authentication fails.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when authentication fails."""</span>
 
 <div class="viewcode-block" id="AuthenticationError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.AuthenticationError.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Authentication failed for </span><span class="si">{</span><span class="n">provider</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;provider&quot;</span><span class="p">:</span> <span class="n">provider</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Check your credentials and authentication settings&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Authentication failed for </span><span class="si">{</span><span class="n">provider</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"provider"</span><span class="p">:</span> <span class="n">provider</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Check your credentials and authentication settings"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -576,7 +580,7 @@
 <div class="viewcode-block" id="PlottingError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.PlottingError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PlottingError</span><span class="p">(</span><span class="n">SciTeXError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for plotting-related errors.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for plotting-related errors."""</span>
 
     <span class="k">pass</span></div>
 
@@ -585,15 +589,15 @@
 <div class="viewcode-block" id="FigureNotFoundError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.FigureNotFoundError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FigureNotFoundError</span><span class="p">(</span><span class="n">PlottingError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when attempting to operate on a non-existent figure.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when attempting to operate on a non-existent figure."""</span>
 
 <div class="viewcode-block" id="FigureNotFoundError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.FigureNotFoundError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig_id</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Figure </span><span class="si">{</span><span class="n">fig_id</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;figure_id&quot;</span><span class="p">:</span> <span class="n">fig_id</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Ensure the figure was created before attempting to save/modify it&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Figure </span><span class="si">{</span><span class="n">fig_id</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"figure_id"</span><span class="p">:</span> <span class="n">fig_id</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Ensure the figure was created before attempting to save/modify it"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -602,15 +606,15 @@
 <div class="viewcode-block" id="AxisError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.AxisError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AxisError</span><span class="p">(</span><span class="n">PlottingError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there are issues with plot axes.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when there are issues with plot axes."""</span>
 
 <div class="viewcode-block" id="AxisError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.AxisError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">axis_info</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">message</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;axis_info&quot;</span><span class="p">:</span> <span class="n">axis_info</span><span class="p">}</span> <span class="k">if</span> <span class="n">axis_info</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Check axis indices and subplot configuration&quot;</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"axis_info"</span><span class="p">:</span> <span class="n">axis_info</span><span class="p">}</span> <span class="k">if</span> <span class="n">axis_info</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Check axis indices and subplot configuration"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -624,7 +628,7 @@
 <div class="viewcode-block" id="DataError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.DataError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DataError</span><span class="p">(</span><span class="n">SciTeXError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for data processing errors.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for data processing errors."""</span>
 
     <span class="k">pass</span></div>
 
@@ -633,19 +637,19 @@
 <div class="viewcode-block" id="ShapeError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ShapeError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ShapeError</span><span class="p">(</span><span class="n">DataError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when data shapes are incompatible.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when data shapes are incompatible."""</span>
 
 <div class="viewcode-block" id="ShapeError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ShapeError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected_shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">actual_shape</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Shape mismatch in </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Shape mismatch in </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="n">context</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;expected_shape&quot;</span><span class="p">:</span> <span class="n">expected_shape</span><span class="p">,</span>
-                <span class="s2">&quot;actual_shape&quot;</span><span class="p">:</span> <span class="n">actual_shape</span><span class="p">,</span>
-                <span class="s2">&quot;operation&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="p">,</span>
+                <span class="s2">"expected_shape"</span><span class="p">:</span> <span class="n">expected_shape</span><span class="p">,</span>
+                <span class="s2">"actual_shape"</span><span class="p">:</span> <span class="n">actual_shape</span><span class="p">,</span>
+                <span class="s2">"operation"</span><span class="p">:</span> <span class="n">operation</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Reshape or transpose your data to match expected dimensions&quot;</span><span class="p">,</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Reshape or transpose your data to match expected dimensions"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -654,19 +658,19 @@
 <div class="viewcode-block" id="DTypeError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.DTypeError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DTypeError</span><span class="p">(</span><span class="n">DataError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when data types are incompatible.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when data types are incompatible."""</span>
 
 <div class="viewcode-block" id="DTypeError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.DTypeError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expected_dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">actual_dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Data type mismatch in </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Data type mismatch in </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="n">context</span><span class="o">=</span><span class="p">{</span>
-                <span class="s2">&quot;expected_dtype&quot;</span><span class="p">:</span> <span class="n">expected_dtype</span><span class="p">,</span>
-                <span class="s2">&quot;actual_dtype&quot;</span><span class="p">:</span> <span class="n">actual_dtype</span><span class="p">,</span>
-                <span class="s2">&quot;operation&quot;</span><span class="p">:</span> <span class="n">operation</span><span class="p">,</span>
+                <span class="s2">"expected_dtype"</span><span class="p">:</span> <span class="n">expected_dtype</span><span class="p">,</span>
+                <span class="s2">"actual_dtype"</span><span class="p">:</span> <span class="n">actual_dtype</span><span class="p">,</span>
+                <span class="s2">"operation"</span><span class="p">:</span> <span class="n">operation</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Convert data to </span><span class="si">{</span><span class="n">expected_dtype</span><span class="si">}</span><span class="s2"> using appropriate casting&quot;</span><span class="p">,</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Convert data to </span><span class="si">{</span><span class="n">expected_dtype</span><span class="si">}</span><span class="s2"> using appropriate casting"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -680,7 +684,7 @@
 <div class="viewcode-block" id="PathError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.PathError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PathError</span><span class="p">(</span><span class="n">SciTeXError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for path-related errors.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for path-related errors."""</span>
 
     <span class="k">pass</span></div>
 
@@ -689,15 +693,15 @@
 <div class="viewcode-block" id="InvalidPathError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.InvalidPathError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">InvalidPathError</span><span class="p">(</span><span class="n">PathError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a path is invalid or doesn&#39;t follow SciTeX conventions.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when a path is invalid or doesn't follow SciTeX conventions."""</span>
 
 <div class="viewcode-block" id="InvalidPathError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.InvalidPathError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Invalid path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Use relative paths starting with &#39;./&#39; or &#39;../&#39;&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Invalid path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="n">path</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Use relative paths starting with './' or '../'"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -706,15 +710,15 @@
 <div class="viewcode-block" id="PathNotFoundError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.PathNotFoundError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PathNotFoundError</span><span class="p">(</span><span class="n">PathError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a required path doesn&#39;t exist.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when a required path doesn't exist."""</span>
 
 <div class="viewcode-block" id="PathNotFoundError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.PathNotFoundError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Path not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Check if the path exists and is accessible&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Path not found: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="n">path</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Check if the path exists and is accessible"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -728,7 +732,7 @@
 <div class="viewcode-block" id="TemplateError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.TemplateError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TemplateError</span><span class="p">(</span><span class="n">SciTeXError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for template-related errors.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for template-related errors."""</span>
 
     <span class="k">pass</span></div>
 
@@ -737,15 +741,15 @@
 <div class="viewcode-block" id="TemplateViolationError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.TemplateViolationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TemplateViolationError</span><span class="p">(</span><span class="n">TemplateError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when SciTeX template is not followed.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when SciTeX template is not followed."""</span>
 
 <div class="viewcode-block" id="TemplateViolationError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.TemplateViolationError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">violation</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Template violation in </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">violation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;filepath&quot;</span><span class="p">:</span> <span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;violation&quot;</span><span class="p">:</span> <span class="n">violation</span><span class="p">},</span>
-            <span class="n">suggestion</span><span class="o">=</span><span class="s2">&quot;Follow the SciTeX template structure as defined in IMPORTANT-SCITEX-02-file-template.md&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">"Template violation in </span><span class="si">{</span><span class="n">filepath</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">violation</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"filepath"</span><span class="p">:</span> <span class="n">filepath</span><span class="p">,</span> <span class="s2">"violation"</span><span class="p">:</span> <span class="n">violation</span><span class="p">},</span>
+            <span class="n">suggestion</span><span class="o">=</span><span class="s2">"Follow the SciTeX template structure as defined in IMPORTANT-SCITEX-02-file-template.md"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
@@ -759,7 +763,7 @@
 <div class="viewcode-block" id="NNError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.NNError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">NNError</span><span class="p">(</span><span class="n">SciTeXError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for neural network module errors.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for neural network module errors."""</span>
 
     <span class="k">pass</span></div>
 
@@ -768,14 +772,14 @@
 <div class="viewcode-block" id="ModelError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ModelError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ModelError</span><span class="p">(</span><span class="n">NNError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there are issues with neural network models.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when there are issues with neural network models."""</span>
 
 <div class="viewcode-block" id="ModelError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.ModelError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Model error in </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;model_name&quot;</span><span class="p">:</span> <span class="n">model_name</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="sa">f</span><span class="s2">"Model error in </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"model_name"</span><span class="p">:</span> <span class="n">model_name</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
         <span class="p">)</span></div>
 </div>
 
@@ -789,7 +793,7 @@
 <div class="viewcode-block" id="StatsError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.StatsError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StatsError</span><span class="p">(</span><span class="n">SciTeXError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for statistics module errors.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base class for statistics module errors."""</span>
 
     <span class="k">pass</span></div>
 
@@ -798,14 +802,14 @@
 <div class="viewcode-block" id="TestError">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.TestError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TestError</span><span class="p">(</span><span class="n">StatsError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when statistical tests fail.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Raised when statistical tests fail."""</span>
 
 <div class="viewcode-block" id="TestError.__init__">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.TestError.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Statistical test &#39;</span><span class="si">{</span><span class="n">test_name</span><span class="si">}</span><span class="s2">&#39; failed: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;test_name&quot;</span><span class="p">:</span> <span class="n">test_name</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
+            <span class="sa">f</span><span class="s2">"Statistical test '</span><span class="si">{</span><span class="n">test_name</span><span class="si">}</span><span class="s2">' failed: </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">context</span><span class="o">=</span><span class="p">{</span><span class="s2">"test_name"</span><span class="p">:</span> <span class="n">test_name</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="n">reason</span><span class="p">},</span>
         <span class="p">)</span></div>
 </div>
 
@@ -819,13 +823,13 @@
 <div class="viewcode-block" id="check_path">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.check_path">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_path</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate a path according to SciTeX conventions.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Validate a path according to SciTeX conventions."""</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">InvalidPathError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s2">&quot;Path must be a string&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">InvalidPathError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="s2">"Path must be a string"</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;./&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;../&quot;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"./"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"../"</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="n">InvalidPathError</span><span class="p">(</span>
-            <span class="n">path</span><span class="p">,</span> <span class="s2">&quot;Path must be relative and start with &#39;./&#39; or &#39;../&#39;&quot;</span>
+            <span class="n">path</span><span class="p">,</span> <span class="s2">"Path must be relative and start with './' or '../'"</span>
         <span class="p">)</span></div>
 
 
@@ -833,7 +837,7 @@
 <div class="viewcode-block" id="check_file_exists">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.check_file_exists">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_file_exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a file exists.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Check if a file exists."""</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
@@ -844,7 +848,7 @@
 <div class="viewcode-block" id="check_shape_compatibility">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.check_shape_compatibility">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_shape_compatibility</span><span class="p">(</span><span class="n">shape1</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">shape2</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if two shapes are compatible for an operation.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Check if two shapes are compatible for an operation."""</span>
     <span class="k">if</span> <span class="n">shape1</span> <span class="o">!=</span> <span class="n">shape2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">ShapeError</span><span class="p">(</span><span class="n">shape1</span><span class="p">,</span> <span class="n">shape2</span><span class="p">,</span> <span class="n">operation</span><span class="p">)</span></div>
 
@@ -852,51 +856,51 @@
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># Base errors</span>
-    <span class="s2">&quot;SciTeXError&quot;</span><span class="p">,</span>
+    <span class="s2">"SciTeXError"</span><span class="p">,</span>
     <span class="c1"># Configuration</span>
-    <span class="s2">&quot;ConfigurationError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ConfigFileNotFoundError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ConfigKeyError&quot;</span><span class="p">,</span>
+    <span class="s2">"ConfigurationError"</span><span class="p">,</span>
+    <span class="s2">"ConfigFileNotFoundError"</span><span class="p">,</span>
+    <span class="s2">"ConfigKeyError"</span><span class="p">,</span>
     <span class="c1"># IO</span>
-    <span class="s2">&quot;IOError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;FileFormatError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SaveError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;LoadError&quot;</span><span class="p">,</span>
+    <span class="s2">"IOError"</span><span class="p">,</span>
+    <span class="s2">"FileFormatError"</span><span class="p">,</span>
+    <span class="s2">"SaveError"</span><span class="p">,</span>
+    <span class="s2">"LoadError"</span><span class="p">,</span>
     <span class="c1"># Scholar</span>
-    <span class="s2">&quot;ScholarError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SearchError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;EnrichmentError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;PDFDownloadError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DOIResolutionError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;PDFExtractionError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;BibTeXEnrichmentError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TranslatorError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;AuthenticationError&quot;</span><span class="p">,</span>
+    <span class="s2">"ScholarError"</span><span class="p">,</span>
+    <span class="s2">"SearchError"</span><span class="p">,</span>
+    <span class="s2">"EnrichmentError"</span><span class="p">,</span>
+    <span class="s2">"PDFDownloadError"</span><span class="p">,</span>
+    <span class="s2">"DOIResolutionError"</span><span class="p">,</span>
+    <span class="s2">"PDFExtractionError"</span><span class="p">,</span>
+    <span class="s2">"BibTeXEnrichmentError"</span><span class="p">,</span>
+    <span class="s2">"TranslatorError"</span><span class="p">,</span>
+    <span class="s2">"AuthenticationError"</span><span class="p">,</span>
     <span class="c1"># Plotting</span>
-    <span class="s2">&quot;PlottingError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;FigureNotFoundError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;AxisError&quot;</span><span class="p">,</span>
+    <span class="s2">"PlottingError"</span><span class="p">,</span>
+    <span class="s2">"FigureNotFoundError"</span><span class="p">,</span>
+    <span class="s2">"AxisError"</span><span class="p">,</span>
     <span class="c1"># Data</span>
-    <span class="s2">&quot;DataError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ShapeError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DTypeError&quot;</span><span class="p">,</span>
+    <span class="s2">"DataError"</span><span class="p">,</span>
+    <span class="s2">"ShapeError"</span><span class="p">,</span>
+    <span class="s2">"DTypeError"</span><span class="p">,</span>
     <span class="c1"># Path</span>
-    <span class="s2">&quot;PathError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;InvalidPathError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;PathNotFoundError&quot;</span><span class="p">,</span>
+    <span class="s2">"PathError"</span><span class="p">,</span>
+    <span class="s2">"InvalidPathError"</span><span class="p">,</span>
+    <span class="s2">"PathNotFoundError"</span><span class="p">,</span>
     <span class="c1"># Template</span>
-    <span class="s2">&quot;TemplateError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TemplateViolationError&quot;</span><span class="p">,</span>
+    <span class="s2">"TemplateError"</span><span class="p">,</span>
+    <span class="s2">"TemplateViolationError"</span><span class="p">,</span>
     <span class="c1"># Neural Network</span>
-    <span class="s2">&quot;NNError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ModelError&quot;</span><span class="p">,</span>
+    <span class="s2">"NNError"</span><span class="p">,</span>
+    <span class="s2">"ModelError"</span><span class="p">,</span>
     <span class="c1"># Statistics</span>
-    <span class="s2">&quot;StatsError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TestError&quot;</span><span class="p">,</span>
+    <span class="s2">"StatsError"</span><span class="p">,</span>
+    <span class="s2">"TestError"</span><span class="p">,</span>
     <span class="c1"># Validation helpers</span>
-    <span class="s2">&quot;check_path&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;check_file_exists&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;check_shape_compatibility&quot;</span><span class="p">,</span>
+    <span class="s2">"check_path"</span><span class="p">,</span>
+    <span class="s2">"check_file_exists"</span><span class="p">,</span>
+    <span class="s2">"check_shape_compatibility"</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="c1"># EOF</span>

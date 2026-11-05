@@ -6,15 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quickstart &mdash; SciTeX Logging v0.1.5</title>
+  <title>Quickstart &mdash; SciTeX Logging v0.2.5</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx_autodoc_typehints.css?v=057ac668" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=59fadc99"></script>
+      <script src="_static/documentation_options.js?v=cb850272"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -59,6 +60,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/scitex_logging.html">scitex_logging</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.getLogger"><code class="docutils literal notranslate"><span class="pre">getLogger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.getConsole"><code class="docutils literal notranslate"><span class="pre">getConsole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.getDiagnostic"><code class="docutils literal notranslate"><span class="pre">getDiagnostic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.getPlainConsole"><code class="docutils literal notranslate"><span class="pre">getPlainConsole()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.configure"><code class="docutils literal notranslate"><span class="pre">configure()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.set_level"><code class="docutils literal notranslate"><span class="pre">set_level()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.get_level"><code class="docutils literal notranslate"><span class="pre">get_level()</span></code></a></li>
@@ -213,7 +217,7 @@
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Quickstart</li>
       <li class="wy-breadcrumbs-aside">
-              <a href="https://github.com/ywatanabe1989/scitex-logging/blob/develop/docs/sphinx/quickstart.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/scitex-ai/scitex-logging/blob/develop/docs/sphinx/quickstart.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
   </ul>
   <hr/>
@@ -223,8 +227,8 @@
              
   <section id="quickstart">
 <h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h1>
-<p>See <a class="reference external" href="https://github.com/ywatanabe1989/scitex-logging/blob/develop/examples/quickstart.py">examples/quickstart.py</a> for a runnable example.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;scitex-logging quickstart: structured logging + custom warning types.&quot;&quot;&quot;</span>
+<p>See <a class="reference external" href="https://github.com/scitex-ai/scitex-logging/blob/develop/examples/quickstart.py">examples/quickstart.py</a> for a runnable example.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">"""scitex-logging quickstart: structured logging + custom warning types."""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
@@ -233,39 +237,39 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="c1"># 1. getLogger — module-style logger like stdlib logging.</span>
-    <span class="n">log</span> <span class="o">=</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;quickstart&quot;</span><span class="p">)</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;hello from scitex-logging&quot;</span><span class="p">)</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">"quickstart"</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"hello from scitex-logging"</span><span class="p">)</span>
 
     <span class="c1"># 2. Level constants are exported.</span>
     <span class="nb">print</span><span class="p">(</span>
-        <span class="s2">&quot;DEBUG/INFO/SUCCESS:&quot;</span><span class="p">,</span>
+        <span class="s2">"DEBUG/INFO/SUCCESS:"</span><span class="p">,</span>
         <span class="n">scitex_logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
         <span class="n">scitex_logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
         <span class="n">scitex_logging</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># 3. set_level / get_level round-trip.</span>
-    <span class="n">scitex_logging</span><span class="o">.</span><span class="n">set_level</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;level:&quot;</span><span class="p">,</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">get_level</span><span class="p">())</span>
+    <span class="n">scitex_logging</span><span class="o">.</span><span class="n">set_level</span><span class="p">(</span><span class="s2">"DEBUG"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"level:"</span><span class="p">,</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">get_level</span><span class="p">())</span>
 
     <span class="c1"># 4. SciTeX-specific exceptions are usable as regular exceptions.</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">PathNotFoundError</span><span class="p">(</span><span class="s2">&quot;/no/such/path&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">PathNotFoundError</span><span class="p">(</span><span class="s2">"/no/such/path"</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">SciTeXError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;caught SciTeXError:&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"caught SciTeXError:"</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
 
     <span class="c1"># 5. Custom warnings categories work with warnings.warn.</span>
     <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">caught</span><span class="p">:</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;always&quot;</span><span class="p">)</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;deprecated thing&quot;</span><span class="p">,</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">SciTeXDeprecationWarning</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">"always"</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">"deprecated thing"</span><span class="p">,</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">SciTeXDeprecationWarning</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">any</span><span class="p">(</span>
             <span class="nb">issubclass</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">category</span><span class="p">,</span> <span class="n">scitex_logging</span><span class="o">.</span><span class="n">SciTeXDeprecationWarning</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">caught</span>
         <span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;deprecation warning emitted&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"deprecation warning emitted"</span><span class="p">)</span>
 
 
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
 </pre></div>
 </div>

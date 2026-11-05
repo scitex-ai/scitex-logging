@@ -5,15 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scitex_logging._Tee &mdash; SciTeX Logging v0.1.5</title>
+  <title>scitex_logging._Tee &mdash; SciTeX Logging v0.2.5</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=59fadc99"></script>
+      <script src="../../_static/documentation_options.js?v=cb850272"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -56,6 +57,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/scitex_logging.html">scitex_logging</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getLogger"><code class="docutils literal notranslate"><span class="pre">getLogger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getConsole"><code class="docutils literal notranslate"><span class="pre">getConsole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getDiagnostic"><code class="docutils literal notranslate"><span class="pre">getDiagnostic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getPlainConsole"><code class="docutils literal notranslate"><span class="pre">getPlainConsole()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.configure"><code class="docutils literal notranslate"><span class="pre">configure()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.set_level"><code class="docutils literal notranslate"><span class="pre">set_level()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.get_level"><code class="docutils literal notranslate"><span class="pre">get_level()</span></code></a></li>
@@ -221,7 +225,7 @@
   <h1>Source code for scitex_logging._Tee</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1"># Timestamp: &quot;2025-10-13 07:12:49 (ywatanabe)&quot;</span>
+<span class="c1"># Timestamp: "2025-10-13 07:12:49 (ywatanabe)"</span>
 <span class="c1"># File: /home/ywatanabe/proj/scitex_repo/src/scitex/logging/_Tee.py</span>
 <span class="c1"># ----------------------------------------</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -234,7 +238,7 @@
 
 <span class="n">THIS_FILE</span> <span class="o">=</span> <span class="vm">__file__</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">Functionality:</span>
 <span class="sd">    * Redirects and logs standard output and error streams</span>
 <span class="sd">    * Filters progress bar outputs from stderr logging</span>
@@ -248,9 +252,9 @@
 <span class="sd">Prerequisites:</span>
 <span class="sd">    * Python 3.6+</span>
 <span class="sd">    * scitex package for path handling and colored printing</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
-<span class="sd">&quot;&quot;&quot;Imports&quot;&quot;&quot;</span>
+<span class="sd">"""Imports"""</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
@@ -258,20 +262,20 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_clean_path</span><span class="p">(</span><span class="n">path_string</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize a file system path (stdlib replacement for scitex.str.clean_path).&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">path_string</span><span class="p">,</span> <span class="s2">&quot;__fspath__&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Normalize a file system path (stdlib replacement for scitex.str.clean_path)."""</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">path_string</span><span class="p">,</span> <span class="s2">"__fspath__"</span><span class="p">):</span>
         <span class="n">path_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path_string</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">normpath</span><span class="p">(</span><span class="n">path_string</span><span class="p">)</span>
 
 
-<span class="sd">&quot;&quot;&quot;Functions &amp; Classes&quot;&quot;&quot;</span>
+<span class="sd">"""Functions &amp; Classes"""</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_logger</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get logger lazily to avoid circular import during module initialization.&quot;&quot;&quot;</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="w">    </span><span class="sd">"""Get logger lazily to avoid circular import during module initialization."""</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
 
-    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Tee">
@@ -284,15 +288,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_stream</span> <span class="o">=</span> <span class="n">stream</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_log_path</span> <span class="o">=</span> <span class="n">log_path</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Line buffering</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Line buffering</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="c1"># Show where logs are being saved using scitex logging</span>
                 <span class="n">logger</span> <span class="o">=</span> <span class="n">_get_logger</span><span class="p">()</span>
-                <span class="n">stream_name</span> <span class="o">=</span> <span class="s2">&quot;stderr&quot;</span> <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="k">else</span> <span class="s2">&quot;stdout&quot;</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tee [</span><span class="si">{</span><span class="n">stream_name</span><span class="si">}</span><span class="s2">]: </span><span class="si">{</span><span class="n">log_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">stream_name</span> <span class="o">=</span> <span class="s2">"stderr"</span> <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="k">else</span> <span class="s2">"stdout"</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tee [</span><span class="si">{</span><span class="n">stream_name</span><span class="si">}</span><span class="s2">]: </span><span class="si">{</span><span class="n">log_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to open log file </span><span class="si">{</span><span class="n">log_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Failed to open log file </span><span class="si">{</span><span class="n">log_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_get_logger</span><span class="p">()</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="c1"># Optional Tee logging must survive a broken logger/handler.</span>
+                <span class="c1"># Preserve the original current-stderr fallback independently</span>
+                <span class="c1"># of the backend that just failed to report this error.</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_stderr</span> <span class="o">=</span> <span class="n">stream</span> <span class="ow">is</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span></div>
 
 
@@ -303,7 +314,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_stderr</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span>
-                    <span class="sa">r</span><span class="s2">&quot;^[\s]*[0-9]+%.*\[A*$&quot;</span><span class="p">,</span> <span class="n">data</span>
+                    <span class="sa">r</span><span class="s2">"^[\s]*[0-9]+%.*\[A*$"</span><span class="p">,</span> <span class="n">data</span>
                 <span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>  <span class="c1"># Ensure immediate write</span>
@@ -339,15 +350,15 @@
 <div class="viewcode-block" id="Tee.close">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.Tee.close">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Explicitly close the log file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_log_file&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Explicitly close the log file."""</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_log_file"</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
                     <span class="c1"># Use lazy logger to avoid circular import</span>
                     <span class="n">logger</span> <span class="o">=</span> <span class="n">_get_logger</span><span class="p">()</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tee: Closed log file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tee: Closed log file: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Prevent double-close</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="k">pass</span></div>
@@ -355,11 +366,11 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Only attempt cleanup if Python is not shutting down</span>
-        <span class="c1"># This prevents &quot;Exception ignored&quot; errors during interpreter shutdown</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_log_file&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># This prevents "Exception ignored" errors during interpreter shutdown</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_log_file"</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># Check if the file object is still valid</span>
-                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">,</span> <span class="s2">&quot;closed&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="p">,</span> <span class="s2">"closed"</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_log_file</span><span class="o">.</span><span class="n">closed</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="c1"># Silently ignore exceptions during cleanup</span>
@@ -370,13 +381,13 @@
 <div class="viewcode-block" id="tee">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.tee">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">tee</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="n">sdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Redirects stdout and stderr to both console and log files.</span>
+<span class="w">    </span><span class="sd">"""Redirects stdout and stderr to both console and log files.</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    &gt;&gt;&gt; import sys</span>
 <span class="sd">    &gt;&gt;&gt; sys.stdout, sys.stderr = tee(sys)</span>
-<span class="sd">    &gt;&gt;&gt; print(&quot;abc&quot;)  # stdout</span>
+<span class="sd">    &gt;&gt;&gt; print("abc")  # stdout</span>
 <span class="sd">    &gt;&gt;&gt; print(1 / 0)  # stderr</span>
 
 <span class="sd">    Parameters</span>
@@ -392,7 +403,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    tuple[Any, Any]</span>
 <span class="sd">        Wrapped stdout and stderr objects</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 
     <span class="c1">####################</span>
@@ -401,20 +412,20 @@
     <span class="c1">####################</span>
     <span class="k">if</span> <span class="n">sdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">THIS_FILE</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span>
-        <span class="k">if</span> <span class="s2">&quot;ipython&quot;</span> <span class="ow">in</span> <span class="n">THIS_FILE</span><span class="p">:</span>
-            <span class="n">THIS_FILE</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/tmp/</span><span class="si">{</span><span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;USER&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.py&quot;</span>
-        <span class="n">sdir</span> <span class="o">=</span> <span class="n">_clean_path</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">THIS_FILE</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_out&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">"ipython"</span> <span class="ow">in</span> <span class="n">THIS_FILE</span><span class="p">:</span>
+            <span class="n">THIS_FILE</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"/tmp/</span><span class="si">{</span><span class="n">_os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">'USER'</span><span class="p">)</span><span class="si">}</span><span class="s2">.py"</span>
+        <span class="n">sdir</span> <span class="o">=</span> <span class="n">_clean_path</span><span class="p">(</span><span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">THIS_FILE</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"_out"</span><span class="p">)</span>
 
-    <span class="n">sdir</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sdir</span><span class="p">,</span> <span class="s2">&quot;logs/&quot;</span><span class="p">)</span>
+    <span class="n">sdir</span> <span class="o">=</span> <span class="n">_os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sdir</span><span class="p">,</span> <span class="s2">"logs/"</span><span class="p">)</span>
     <span class="n">_os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">sdir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="n">spath_stdout</span> <span class="o">=</span> <span class="n">sdir</span> <span class="o">+</span> <span class="s2">&quot;stdout.log&quot;</span>
-    <span class="n">spath_stderr</span> <span class="o">=</span> <span class="n">sdir</span> <span class="o">+</span> <span class="s2">&quot;stderr.log&quot;</span>
+    <span class="n">spath_stdout</span> <span class="o">=</span> <span class="n">sdir</span> <span class="o">+</span> <span class="s2">"stdout.log"</span>
+    <span class="n">spath_stderr</span> <span class="o">=</span> <span class="n">sdir</span> <span class="o">+</span> <span class="s2">"stderr.log"</span>
     <span class="n">sys_stdout</span> <span class="o">=</span> <span class="n">Tee</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">spath_stdout</span><span class="p">)</span>
     <span class="n">sys_stderr</span> <span class="o">=</span> <span class="n">Tee</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">spath_stderr</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Standard output/error are being logged at:</span><span class="se">\n\t</span><span class="si">{</span><span class="n">spath_stdout</span><span class="si">}</span><span class="se">\n\t</span><span class="si">{</span><span class="n">spath_stderr</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Standard output/error are being logged at:</span><span class="se">\n\t</span><span class="si">{</span><span class="n">spath_stdout</span><span class="si">}</span><span class="se">\n\t</span><span class="si">{</span><span class="n">spath_stderr</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">logger</span> <span class="o">=</span> <span class="n">_get_logger</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="c1"># printc(message)</span>

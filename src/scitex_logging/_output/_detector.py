@@ -372,11 +372,10 @@ def _output_calls(text: str) -> tuple[ast.AST | None, list[_OutputCall]]:
 
 
 def _src_files(repo: Path) -> list[Path]:
-    """Every Python file under src, including bundled scripts and examples."""
-    src = Path(repo) / "src"
-    if not src.is_dir():
-        return []
-    return sorted(src.rglob("*.py"))
+    """Authored Python under src, preserving lexical backend ownership paths."""
+    from ._inventory import source_files
+
+    return source_files(Path(repo))
 
 
 def source_repo(filepath: str | Path) -> Path | None:

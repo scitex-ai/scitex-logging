@@ -5,15 +5,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scitex_logging._warnings &mdash; SciTeX Logging v0.1.5</title>
+  <title>scitex_logging._warnings &mdash; SciTeX Logging v0.2.5</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx_autodoc_typehints.css?v=057ac668" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=59fadc99"></script>
+      <script src="../../_static/documentation_options.js?v=cb850272"></script>
       <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -56,6 +57,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/scitex_logging.html">scitex_logging</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getLogger"><code class="docutils literal notranslate"><span class="pre">getLogger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getConsole"><code class="docutils literal notranslate"><span class="pre">getConsole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getDiagnostic"><code class="docutils literal notranslate"><span class="pre">getDiagnostic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.getPlainConsole"><code class="docutils literal notranslate"><span class="pre">getPlainConsole()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.configure"><code class="docutils literal notranslate"><span class="pre">configure()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.set_level"><code class="docutils literal notranslate"><span class="pre">set_level()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/scitex_logging.html#scitex_logging.get_level"><code class="docutils literal notranslate"><span class="pre">get_level()</span></code></a></li>
@@ -221,36 +225,36 @@
   <h1>Source code for scitex_logging._warnings</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="c1"># Timestamp: &quot;2025-12-21&quot;</span>
+<span class="c1"># Timestamp: "2025-12-21"</span>
 <span class="c1"># File: /home/ywatanabe/proj/scitex-code/src/scitex/logging/_warnings.py</span>
 
-<span class="sd">&quot;&quot;&quot;Warning system for SciTeX, mimicking Python&#39;s warnings module.</span>
+<span class="sd">"""Warning system for SciTeX, mimicking Python's warnings module.</span>
 
 <span class="sd">Usage:</span>
 <span class="sd">    import scitex_logging as logging</span>
 <span class="sd">    from scitex_logging import UnitWarning</span>
 
 <span class="sd">    # Emit a warning</span>
-<span class="sd">    logging.warn(&quot;Missing units on axis label&quot;, UnitWarning)</span>
+<span class="sd">    logging.warn("Missing units on axis label", UnitWarning)</span>
 
 <span class="sd">    # Filter warnings (like warnings.filterwarnings)</span>
-<span class="sd">    logging.filterwarnings(&quot;ignore&quot;, category=UnitWarning)</span>
-<span class="sd">    logging.filterwarnings(&quot;error&quot;, category=UnitWarning)  # Raise as exception</span>
-<span class="sd">    logging.filterwarnings(&quot;always&quot;, category=UnitWarning)  # Always show</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    logging.filterwarnings("ignore", category=UnitWarning)</span>
+<span class="sd">    logging.filterwarnings("error", category=UnitWarning)  # Raise as exception</span>
+<span class="sd">    logging.filterwarnings("always", category=UnitWarning)  # Always show</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Type</span>
 
 <span class="c1"># =============================================================================</span>
-<span class="c1"># Warning Categories (similar to Python&#39;s warning classes)</span>
+<span class="c1"># Warning Categories (similar to Python's warning classes)</span>
 <span class="c1"># =============================================================================</span>
 
 
 <div class="viewcode-block" id="SciTeXWarning">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.SciTeXWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SciTeXWarning</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base warning class for all SciTeX warnings.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Base warning class for all SciTeX warnings."""</span>
 
     <span class="k">pass</span></div>
 
@@ -259,13 +263,13 @@
 <div class="viewcode-block" id="UnitWarning">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.UnitWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnitWarning</span><span class="p">(</span><span class="n">SciTeXWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning for axis label unit issues (educational for SI conventions).</span>
+<span class="w">    </span><span class="sd">"""Warning for axis label unit issues (educational for SI conventions).</span>
 
 <span class="sd">    Raised when:</span>
 <span class="sd">    - Axis labels are missing units</span>
 <span class="sd">    - Units use parentheses instead of brackets (SI prefers [])</span>
 <span class="sd">    - Units use division instead of negative exponents (m/s vs m·s⁻¹)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">pass</span></div>
 
@@ -274,7 +278,7 @@
 <div class="viewcode-block" id="StyleWarning">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.StyleWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StyleWarning</span><span class="p">(</span><span class="n">SciTeXWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning for style/formatting issues.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Warning for style/formatting issues."""</span>
 
     <span class="k">pass</span></div>
 
@@ -283,7 +287,7 @@
 <div class="viewcode-block" id="SciTeXDeprecationWarning">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.SciTeXDeprecationWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SciTeXDeprecationWarning</span><span class="p">(</span><span class="n">SciTeXWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning for deprecated SciTeX features.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Warning for deprecated SciTeX features."""</span>
 
     <span class="k">pass</span></div>
 
@@ -292,7 +296,7 @@
 <div class="viewcode-block" id="PerformanceWarning">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.PerformanceWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PerformanceWarning</span><span class="p">(</span><span class="n">SciTeXWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning for performance issues.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Warning for performance issues."""</span>
 
     <span class="k">pass</span></div>
 
@@ -301,7 +305,7 @@
 <div class="viewcode-block" id="DataLossWarning">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.DataLossWarning">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DataLossWarning</span><span class="p">(</span><span class="n">SciTeXWarning</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning for potential data loss.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Warning for potential data loss."""</span>
 
     <span class="k">pass</span></div>
 
@@ -311,9 +315,9 @@
 <span class="c1"># Warning Filter Registry</span>
 <span class="c1"># =============================================================================</span>
 
-<span class="c1"># Actions: &quot;ignore&quot;, &quot;error&quot;, &quot;always&quot;, &quot;default&quot;, &quot;once&quot;, &quot;module&quot;</span>
+<span class="c1"># Actions: "ignore", "error", "always", "default", "once", "module"</span>
 <span class="n">_filters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">SciTeXWarning</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">_seen_warnings</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1"># For &quot;once&quot; action</span>
+<span class="n">_seen_warnings</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c1"># For "once" action</span>
 
 
 <div class="viewcode-block" id="filterwarnings">
@@ -323,18 +327,18 @@
     <span class="n">category</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">SciTeXWarning</span><span class="p">]</span> <span class="o">=</span> <span class="n">SciTeXWarning</span><span class="p">,</span>
     <span class="n">message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Control warning behavior (like warnings.filterwarnings).</span>
+<span class="w">    </span><span class="sd">"""Control warning behavior (like warnings.filterwarnings).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    action : str</span>
 <span class="sd">        One of:</span>
-<span class="sd">        - &quot;ignore&quot;: Never show this warning</span>
-<span class="sd">        - &quot;error&quot;: Raise as exception</span>
-<span class="sd">        - &quot;always&quot;: Always show</span>
-<span class="sd">        - &quot;default&quot;: Show first occurrence per location</span>
-<span class="sd">        - &quot;once&quot;: Show only once total</span>
-<span class="sd">        - &quot;module&quot;: Show once per module</span>
+<span class="sd">        - "ignore": Never show this warning</span>
+<span class="sd">        - "error": Raise as exception</span>
+<span class="sd">        - "always": Always show</span>
+<span class="sd">        - "default": Show first occurrence per location</span>
+<span class="sd">        - "once": Show only once total</span>
+<span class="sd">        - "module": Show once per module</span>
 <span class="sd">    category : type</span>
 <span class="sd">        Warning category (default: SciTeXWarning = all)</span>
 <span class="sd">    message : str, optional</span>
@@ -344,11 +348,11 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import scitex.logging as logging</span>
 <span class="sd">    &gt;&gt;&gt; from scitex.logging import UnitWarning</span>
-<span class="sd">    &gt;&gt;&gt; logging.filterwarnings(&quot;ignore&quot;, category=UnitWarning)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">valid_actions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;always&quot;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;once&quot;</span><span class="p">,</span> <span class="s2">&quot;module&quot;</span><span class="p">}</span>
+<span class="sd">    &gt;&gt;&gt; logging.filterwarnings("ignore", category=UnitWarning)</span>
+<span class="sd">    """</span>
+    <span class="n">valid_actions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"ignore"</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">,</span> <span class="s2">"always"</span><span class="p">,</span> <span class="s2">"default"</span><span class="p">,</span> <span class="s2">"once"</span><span class="p">,</span> <span class="s2">"module"</span><span class="p">}</span>
     <span class="k">if</span> <span class="n">action</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_actions</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid action &#39;</span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">&#39;. Must be one of: </span><span class="si">{</span><span class="n">valid_actions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid action '</span><span class="si">{</span><span class="n">action</span><span class="si">}</span><span class="s2">'. Must be one of: </span><span class="si">{</span><span class="n">valid_actions</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">_filters</span><span class="p">[</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="n">action</span></div>
 
@@ -357,7 +361,7 @@
 <div class="viewcode-block" id="resetwarnings">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.resetwarnings">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">resetwarnings</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reset all warning filters to default behavior.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Reset all warning filters to default behavior."""</span>
     <span class="k">global</span> <span class="n">_filters</span><span class="p">,</span> <span class="n">_seen_warnings</span>
     <span class="n">_filters</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">_seen_warnings</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></div>
@@ -365,7 +369,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_action</span><span class="p">(</span><span class="n">category</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">SciTeXWarning</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the action for a warning category, checking inheritance.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Get the action for a warning category, checking inheritance."""</span>
     <span class="c1"># Check exact match first</span>
     <span class="k">if</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">_filters</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_filters</span><span class="p">[</span><span class="n">category</span><span class="p">]</span>
@@ -376,7 +380,7 @@
             <span class="k">return</span> <span class="n">action</span>
 
     <span class="c1"># Default action</span>
-    <span class="k">return</span> <span class="s2">&quot;default&quot;</span>
+    <span class="k">return</span> <span class="s2">"default"</span>
 
 
 <span class="c1"># =============================================================================</span>
@@ -391,7 +395,7 @@
     <span class="n">category</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">SciTeXWarning</span><span class="p">]</span> <span class="o">=</span> <span class="n">SciTeXWarning</span><span class="p">,</span>
     <span class="n">stacklevel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emit a warning (like warnings.warn but integrated with scitex.logging).</span>
+<span class="w">    </span><span class="sd">"""Emit a warning (like warnings.warn but integrated with scitex.logging).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -406,58 +410,60 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; import scitex.logging as logging</span>
 <span class="sd">    &gt;&gt;&gt; from scitex.logging import UnitWarning</span>
-<span class="sd">    &gt;&gt;&gt; logging.warn(&quot;X axis has no units&quot;, UnitWarning)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    &gt;&gt;&gt; logging.warn("X axis has no units", UnitWarning)</span>
+<span class="sd">    """</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 
     <span class="n">action</span> <span class="o">=</span> <span class="n">_get_action</span><span class="p">(</span><span class="n">category</span><span class="p">)</span>
 
     <span class="c1"># Handle action</span>
-    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;ignore&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">"ignore"</span><span class="p">:</span>
         <span class="k">return</span>
 
-    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">"error"</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">category</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
-    <span class="c1"># Get source location for &quot;once&quot;, &quot;module&quot;, &quot;default&quot; actions</span>
+    <span class="c1"># Get source location for "once", "module", "default" actions</span>
     <span class="n">frame</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">stacklevel</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_back</span>
 
-    <span class="n">location</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_filename</span>
         <span class="n">lineno</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_lineno</span>
-        <span class="n">location</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2">"</span>
 
     <span class="c1"># Check if already seen</span>
-    <span class="n">warn_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">warn_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2">"</span>
 
-    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;once&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">"once"</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">warn_key</span> <span class="ow">in</span> <span class="n">_seen_warnings</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">_seen_warnings</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">warn_key</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">"default"</span><span class="p">:</span>
         <span class="c1"># Show first per location</span>
-        <span class="n">loc_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">loc_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">location</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">loc_key</span> <span class="ow">in</span> <span class="n">_seen_warnings</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">_seen_warnings</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">loc_key</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;module&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">"module"</span><span class="p">:</span>
         <span class="c1"># Show once per module</span>
         <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">module_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">frame</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_filename</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">module_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">frame</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_filename</span><span class="si">}</span><span class="s2">"</span>
             <span class="k">if</span> <span class="n">module_key</span> <span class="ow">in</span> <span class="n">_seen_warnings</span><span class="p">:</span>
                 <span class="k">return</span>
             <span class="n">_seen_warnings</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">module_key</span><span class="p">)</span>
 
     <span class="c1"># Emit via scitex.logging</span>
-    <span class="n">logger</span> <span class="o">=</span> <span class="n">_logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;scitex.warnings&quot;</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="s2">"scitex.warnings"</span><span class="p">)</span>
     <span class="n">category_name</span> <span class="o">=</span> <span class="n">category</span><span class="o">.</span><span class="vm">__name__</span>
 
-    <span class="c1"># Format: &quot;UnitWarning: message&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">category_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="c1"># Format: "UnitWarning: message"</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">category_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
@@ -471,10 +477,10 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">warn_deprecated</span><span class="p">(</span>
     <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Issue a deprecation warning.&quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2"> is deprecated. Use </span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2"> instead.&quot;</span>
+<span class="w">    </span><span class="sd">"""Issue a deprecation warning."""</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">old_name</span><span class="si">}</span><span class="s2"> is deprecated. Use </span><span class="si">{</span><span class="n">new_name</span><span class="si">}</span><span class="s2"> instead."</span>
     <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
-        <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; Will be removed in version </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">" Will be removed in version </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">."</span>
     <span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">SciTeXDeprecationWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
 
 
@@ -482,8 +488,8 @@
 <div class="viewcode-block" id="warn_performance">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.warn_performance">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">warn_performance</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">suggestion</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Issue a performance warning.&quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Performance warning in </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="sd">"""Issue a performance warning."""</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Performance warning in </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">suggestion</span><span class="si">}</span><span class="s2">"</span>
     <span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">PerformanceWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
 
 
@@ -491,28 +497,28 @@
 <div class="viewcode-block" id="warn_data_loss">
 <a class="viewcode-back" href="../../api/scitex_logging.html#scitex_logging.warn_data_loss">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">warn_data_loss</span><span class="p">(</span><span class="n">operation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">detail</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Issue a data loss warning.&quot;&quot;&quot;</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Potential data loss in </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">detail</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">    </span><span class="sd">"""Issue a data loss warning."""</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Potential data loss in </span><span class="si">{</span><span class="n">operation</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">detail</span><span class="si">}</span><span class="s2">"</span>
     <span class="n">warn</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">DataLossWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span></div>
 
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="c1"># Warning categories</span>
-    <span class="s2">&quot;SciTeXWarning&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;UnitWarning&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;StyleWarning&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SciTeXDeprecationWarning&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;PerformanceWarning&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DataLossWarning&quot;</span><span class="p">,</span>
+    <span class="s2">"SciTeXWarning"</span><span class="p">,</span>
+    <span class="s2">"UnitWarning"</span><span class="p">,</span>
+    <span class="s2">"StyleWarning"</span><span class="p">,</span>
+    <span class="s2">"SciTeXDeprecationWarning"</span><span class="p">,</span>
+    <span class="s2">"PerformanceWarning"</span><span class="p">,</span>
+    <span class="s2">"DataLossWarning"</span><span class="p">,</span>
     <span class="c1"># Functions</span>
-    <span class="s2">&quot;warn&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;filterwarnings&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;resetwarnings&quot;</span><span class="p">,</span>
+    <span class="s2">"warn"</span><span class="p">,</span>
+    <span class="s2">"filterwarnings"</span><span class="p">,</span>
+    <span class="s2">"resetwarnings"</span><span class="p">,</span>
     <span class="c1"># Convenience functions</span>
-    <span class="s2">&quot;warn_deprecated&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;warn_performance&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;warn_data_loss&quot;</span><span class="p">,</span>
+    <span class="s2">"warn_deprecated"</span><span class="p">,</span>
+    <span class="s2">"warn_performance"</span><span class="p">,</span>
+    <span class="s2">"warn_data_loss"</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="c1"># EOF</span>

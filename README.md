@@ -16,12 +16,8 @@
 <p align="center">
   <a href="https://pypi.org/project/scitex-logging/"><img src="https://img.shields.io/pypi/v/scitex-logging?label=pypi" alt="pypi"></a>
   <a href="https://pypi.org/project/scitex-logging/"><img src="https://img.shields.io/pypi/pyversions/scitex-logging?label=python" alt="python"></a>
-  <a href="https://github.com/ywatanabe1989/scitex-logging/actions/workflows/rtd-sphinx-build-on-ubuntu-latest.yml"><img src="https://img.shields.io/github/actions/workflow/status/ywatanabe1989/scitex-logging/rtd-sphinx-build-on-ubuntu-latest.yml?branch=develop&label=docs" alt="docs"></a>
-</p>
-<p align="center">
-  <a href="https://github.com/ywatanabe1989/scitex-logging/actions/workflows/pytest-matrix-on-ubuntu-py3-11-3-12-3-13.yml"><img src="https://img.shields.io/github/actions/workflow/status/ywatanabe1989/scitex-logging/pytest-matrix-on-ubuntu-py3-11-3-12-3-13.yml?branch=develop&label=tests" alt="tests"></a>
-  <a href="https://github.com/ywatanabe1989/scitex-logging/actions/workflows/install-test.yml"><img src="https://img.shields.io/github/actions/workflow/status/ywatanabe1989/scitex-logging/install-test.yml?branch=develop&label=install-check" alt="install-check"></a>
-  <a href="https://codecov.io/gh/ywatanabe1989/scitex-logging"><img src="https://img.shields.io/codecov/c/github/ywatanabe1989/scitex-logging/develop?label=cov" alt="cov"></a>
+  <a href="https://github.com/scitex-ai/scitex-logging/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/scitex-ai/scitex-logging/ci.yml?branch=develop&label=checks" alt="checks"></a>
+  <a href="https://codecov.io/gh/scitex-ai/scitex-logging"><img src="https://img.shields.io/codecov/c/github/scitex-ai/scitex-logging/develop?label=cov" alt="coverage"></a>
 </p>
 <!-- scitex-badges:end -->
 
@@ -138,13 +134,6 @@ the umbrella with `pip install scitex[logging]` to use as
 
 AGPL-3.0-only — see [LICENSE](LICENSE).
 
----
-
-<p align="center">
-  <a href="https://scitex.ai" target="_blank"><img src="docs/scitex-icon-navy-inverted.png" alt="SciTeX" width="40"/></a>
-</p>
-
-
 ## Enforced output policy
 
 The logging distribution owns PS-220's shared AST detector, auditor plugin,
@@ -174,3 +163,16 @@ the auditor enforce the resulting source. A missing required provider fails
 closed. Tests exercise actual entry-point discovery, subprocess exit status,
 and shared detector results. The detector is static; dynamically generated
 calls are outside its proof.
+
+Project audits inventory tracked files plus nonignored untracked files under
+`src/`, including hidden authored Python and tracked files matching ignore
+patterns. Ignored dependencies installed there (for example by `npm ci`) are
+outside that Git inventory. Archives without Git retain the full `src/`
+walk. Native edits remain targeted; shell hooks inspect changed and untracked
+source rather than all unchanged tracked files.
+
+---
+
+<p align="center">
+  <a href="https://scitex.ai" target="_blank"><img src="docs/scitex-icon-navy-inverted.png" alt="SciTeX" width="40"/></a>
+</p>
