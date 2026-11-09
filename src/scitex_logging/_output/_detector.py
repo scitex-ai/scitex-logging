@@ -10,6 +10,7 @@ outside its proof.
 from __future__ import annotations
 
 import ast
+import stat
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -396,6 +397,15 @@ def source_repo(filepath: str | Path) -> Path | None:
         # Python <3.13 reports symlink loops as RuntimeError, not OSError.
         # The native hook's existing error boundary must refuse this edit.
         raise OSError("cannot resolve source scope") from error
+    # Non-strict resolution can leave a loop unresolved on newer Python.
+    # Missing targets are valid for Write; remaining symlinks are not.
+    for part in (target, *target.parents):
+        try:
+            info = part.lstat()
+        except FileNotFoundError:
+            continue
+        if stat.S_ISLNK(info.st_mode):
+            raise OSError("cannot resolve source scope")
     for parent in target.parents:
         if parent.name == "src":
             return parent.parent

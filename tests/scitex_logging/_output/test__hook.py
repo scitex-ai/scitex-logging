@@ -170,10 +170,12 @@ def test_unrelated_non_source_file_remains_outside_scope(tmp_path):
     assert findings == [] and not path.exists()
 
 
-def test_unresolvable_alias_fails_closed_in_actual_hook_process(tmp_path):
+@pytest.mark.parametrize("filename", ["cycle.py", "cycle/module.py"])
+def test_unresolvable_alias_fails_closed_in_actual_hook_process(tmp_path, filename):
     # Arrange
-    path = tmp_path / "cycle.py"
-    path.symlink_to(path)
+    loop = tmp_path / Path(filename).parts[0]
+    loop.symlink_to(loop)
+    path = tmp_path / filename
     payload = {
         "cwd": str(tmp_path),
         "tool_name": "Write",

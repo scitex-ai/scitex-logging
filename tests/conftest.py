@@ -21,9 +21,8 @@ def _ensure_subprocess_coverage_shim() -> None:
     purelib = Path(sysconfig.get_paths()["purelib"])
     pth = purelib / "_scitex_logging_subprocess_coverage.pth"
     shim = (
-        "import os, coverage\n"
-        "if os.environ.get('COVERAGE_PROCESS_START'):\n"
-        "    coverage.process_startup()\n"
+        "import os; os.environ.get('COVERAGE_PROCESS_START') and "
+        "__import__('coverage').process_startup()\n"
     )
     try:
         if not pth.exists() or pth.read_text() != shim:

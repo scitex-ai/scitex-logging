@@ -7,6 +7,8 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+- Give coverage subprocesses independent data files and a valid single-line
+  startup binding, preventing SQLite collisions under parallel tests.
 - Enforce PS-220 for native edits and linter checks through source aliases,
   including legacy `apps` paths pointing into `src`. Keep the original path
   for strict logging-backend ownership checks and refuse unresolved aliases.

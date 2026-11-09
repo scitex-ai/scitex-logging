@@ -38,6 +38,7 @@ dev = [
     "hatchling>=1.0",
     "pytest",
     "pytest-cov",
+    "coverage>=7.0",
     "pytest-timeout>=2.1.0",
     # Published engine with mandatory filepath-aware provider contracts.
     "scitex-dev>=0.62.16",
@@ -102,6 +103,11 @@ markers = ["slow: longer Logger subprocess and formatting controls"]
 [tool.ruff]
 line-length = 88
 target-version = "py39"
+
+[tool.coverage.run]
+parallel = true
+source = ["scitex_logging"]
+concurrency = ["multiprocessing", "thread"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I"]
