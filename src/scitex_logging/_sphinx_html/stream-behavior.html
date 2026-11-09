@@ -1,0 +1,370 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Output streams and configuration &mdash; SciTeX Logging v0.2.6</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=fc7d8818"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="scitex_logging" href="api/scitex_logging.html" />
+    <link rel="prev" title="Logging output auditor" href="logging-auditor.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            SciTeX Logging
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#basic-installation">Basic Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#development">Development</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging-auditor.html">Logging output auditor</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Output streams and configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#diagnostic-and-console-names-are-independent">Diagnostic and console names are independent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#caller-owned-output">Caller-owned output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#import-and-explicit-configuration">Import and explicit configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#capture-and-redirects">Capture and redirects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remaining-formatting-limits">Remaining formatting limits</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/scitex_logging.html">scitex_logging</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.getLogger"><code class="docutils literal notranslate"><span class="pre">getLogger()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.getConsole"><code class="docutils literal notranslate"><span class="pre">getConsole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.getDiagnostic"><code class="docutils literal notranslate"><span class="pre">getDiagnostic()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.getPlainConsole"><code class="docutils literal notranslate"><span class="pre">getPlainConsole()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.configure"><code class="docutils literal notranslate"><span class="pre">configure()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.set_level"><code class="docutils literal notranslate"><span class="pre">set_level()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.get_level"><code class="docutils literal notranslate"><span class="pre">get_level()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.enable_file_logging"><code class="docutils literal notranslate"><span class="pre">enable_file_logging()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.is_file_logging_enabled"><code class="docutils literal notranslate"><span class="pre">is_file_logging_enabled()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.get_log_path"><code class="docutils literal notranslate"><span class="pre">get_log_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.Tee"><code class="docutils literal notranslate"><span class="pre">Tee</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.Tee.__init__"><code class="docutils literal notranslate"><span class="pre">Tee.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.Tee.write"><code class="docutils literal notranslate"><span class="pre">Tee.write()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.Tee.flush"><code class="docutils literal notranslate"><span class="pre">Tee.flush()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.Tee.isatty"><code class="docutils literal notranslate"><span class="pre">Tee.isatty()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.Tee.fileno"><code class="docutils literal notranslate"><span class="pre">Tee.fileno()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.Tee.buffer"><code class="docutils literal notranslate"><span class="pre">Tee.buffer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.Tee.close"><code class="docutils literal notranslate"><span class="pre">Tee.close()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.tee"><code class="docutils literal notranslate"><span class="pre">tee()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.log_to_file"><code class="docutils literal notranslate"><span class="pre">log_to_file()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.SciTeXWarning"><code class="docutils literal notranslate"><span class="pre">SciTeXWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.UnitWarning"><code class="docutils literal notranslate"><span class="pre">UnitWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.StyleWarning"><code class="docutils literal notranslate"><span class="pre">StyleWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.SciTeXDeprecationWarning"><code class="docutils literal notranslate"><span class="pre">SciTeXDeprecationWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.PerformanceWarning"><code class="docutils literal notranslate"><span class="pre">PerformanceWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.DataLossWarning"><code class="docutils literal notranslate"><span class="pre">DataLossWarning</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.warn"><code class="docutils literal notranslate"><span class="pre">warn()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.filterwarnings"><code class="docutils literal notranslate"><span class="pre">filterwarnings()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.resetwarnings"><code class="docutils literal notranslate"><span class="pre">resetwarnings()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.warn_deprecated"><code class="docutils literal notranslate"><span class="pre">warn_deprecated()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.warn_performance"><code class="docutils literal notranslate"><span class="pre">warn_performance()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.warn_data_loss"><code class="docutils literal notranslate"><span class="pre">warn_data_loss()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.SciTeXError"><code class="docutils literal notranslate"><span class="pre">SciTeXError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.SciTeXError.__init__"><code class="docutils literal notranslate"><span class="pre">SciTeXError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ConfigurationError"><code class="docutils literal notranslate"><span class="pre">ConfigurationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ConfigFileNotFoundError"><code class="docutils literal notranslate"><span class="pre">ConfigFileNotFoundError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ConfigFileNotFoundError.__init__"><code class="docutils literal notranslate"><span class="pre">ConfigFileNotFoundError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ConfigKeyError"><code class="docutils literal notranslate"><span class="pre">ConfigKeyError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ConfigKeyError.__init__"><code class="docutils literal notranslate"><span class="pre">ConfigKeyError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.IOError"><code class="docutils literal notranslate"><span class="pre">IOError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.FileFormatError"><code class="docutils literal notranslate"><span class="pre">FileFormatError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.FileFormatError.__init__"><code class="docutils literal notranslate"><span class="pre">FileFormatError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.SaveError"><code class="docutils literal notranslate"><span class="pre">SaveError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.SaveError.__init__"><code class="docutils literal notranslate"><span class="pre">SaveError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.LoadError"><code class="docutils literal notranslate"><span class="pre">LoadError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.LoadError.__init__"><code class="docutils literal notranslate"><span class="pre">LoadError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ScholarError"><code class="docutils literal notranslate"><span class="pre">ScholarError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.SearchError"><code class="docutils literal notranslate"><span class="pre">SearchError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.SearchError.__init__"><code class="docutils literal notranslate"><span class="pre">SearchError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.EnrichmentError"><code class="docutils literal notranslate"><span class="pre">EnrichmentError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.EnrichmentError.__init__"><code class="docutils literal notranslate"><span class="pre">EnrichmentError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.PDFDownloadError"><code class="docutils literal notranslate"><span class="pre">PDFDownloadError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.PDFDownloadError.__init__"><code class="docutils literal notranslate"><span class="pre">PDFDownloadError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.DOIResolutionError"><code class="docutils literal notranslate"><span class="pre">DOIResolutionError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.DOIResolutionError.__init__"><code class="docutils literal notranslate"><span class="pre">DOIResolutionError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.PDFExtractionError"><code class="docutils literal notranslate"><span class="pre">PDFExtractionError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.PDFExtractionError.__init__"><code class="docutils literal notranslate"><span class="pre">PDFExtractionError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.BibTeXEnrichmentError"><code class="docutils literal notranslate"><span class="pre">BibTeXEnrichmentError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.BibTeXEnrichmentError.__init__"><code class="docutils literal notranslate"><span class="pre">BibTeXEnrichmentError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.TranslatorError"><code class="docutils literal notranslate"><span class="pre">TranslatorError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.TranslatorError.__init__"><code class="docutils literal notranslate"><span class="pre">TranslatorError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.AuthenticationError"><code class="docutils literal notranslate"><span class="pre">AuthenticationError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.AuthenticationError.__init__"><code class="docutils literal notranslate"><span class="pre">AuthenticationError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.PlottingError"><code class="docutils literal notranslate"><span class="pre">PlottingError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.FigureNotFoundError"><code class="docutils literal notranslate"><span class="pre">FigureNotFoundError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.FigureNotFoundError.__init__"><code class="docutils literal notranslate"><span class="pre">FigureNotFoundError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.AxisError"><code class="docutils literal notranslate"><span class="pre">AxisError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.AxisError.__init__"><code class="docutils literal notranslate"><span class="pre">AxisError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.DataError"><code class="docutils literal notranslate"><span class="pre">DataError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ShapeError"><code class="docutils literal notranslate"><span class="pre">ShapeError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ShapeError.__init__"><code class="docutils literal notranslate"><span class="pre">ShapeError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.DTypeError"><code class="docutils literal notranslate"><span class="pre">DTypeError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.DTypeError.__init__"><code class="docutils literal notranslate"><span class="pre">DTypeError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.PathError"><code class="docutils literal notranslate"><span class="pre">PathError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.InvalidPathError"><code class="docutils literal notranslate"><span class="pre">InvalidPathError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.InvalidPathError.__init__"><code class="docutils literal notranslate"><span class="pre">InvalidPathError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.PathNotFoundError"><code class="docutils literal notranslate"><span class="pre">PathNotFoundError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.PathNotFoundError.__init__"><code class="docutils literal notranslate"><span class="pre">PathNotFoundError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.TemplateError"><code class="docutils literal notranslate"><span class="pre">TemplateError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.TemplateViolationError"><code class="docutils literal notranslate"><span class="pre">TemplateViolationError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.TemplateViolationError.__init__"><code class="docutils literal notranslate"><span class="pre">TemplateViolationError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.NNError"><code class="docutils literal notranslate"><span class="pre">NNError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ModelError"><code class="docutils literal notranslate"><span class="pre">ModelError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.ModelError.__init__"><code class="docutils literal notranslate"><span class="pre">ModelError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.StatsError"><code class="docutils literal notranslate"><span class="pre">StatsError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.TestError"><code class="docutils literal notranslate"><span class="pre">TestError</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.TestError.__init__"><code class="docutils literal notranslate"><span class="pre">TestError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.check_path"><code class="docutils literal notranslate"><span class="pre">check_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.check_file_exists"><code class="docutils literal notranslate"><span class="pre">check_file_exists()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/scitex_logging.html#scitex_logging.check_shape_compatibility"><code class="docutils literal notranslate"><span class="pre">check_shape_compatibility()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SciTeX Logging</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Output streams and configuration</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/scitex-ai/scitex-logging/blob/develop/docs/sphinx/stream-behavior.md" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="output-streams-and-configuration">
+<h1>Output streams and configuration<a class="headerlink" href="#output-streams-and-configuration" title="Link to this heading"></a></h1>
+<p>Choose the writer according to what the output means:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Writer</p></th>
+<th class="head"><p>Destination</p></th>
+<th class="head"><p>Format and filtering</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">getLogger(name)</span></code></p></td>
+<td><p>Root diagnostics: stderr and the log file by default</p></td>
+<td><p>Level prefix; logger and configured handler thresholds apply</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">getConsole(name)</span></code></p></td>
+<td><p>Current stdout</p></td>
+<td><p>Same level prefix; a new console inherits the root threshold unless an explicit level is supplied</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">getPlainConsole(name).emit(text)</span></code></p></td>
+<td><p>Current stdout, or the supplied <code class="docutils literal notranslate"><span class="pre">stream</span></code></p></td>
+<td><p>Exact text plus one newline; no prefix, diagnostic capture, or level filtering</p></td>
+</tr>
+</tbody>
+</table>
+<p>An embedding application’s configured diagnostic handlers remain in control.
+For example, a root handler deliberately writing to stdout will continue to do
+so. SciTeX’s default stderr destination applies when SciTeX configures the root.</p>
+<section id="diagnostic-and-console-names-are-independent">
+<h2>Diagnostic and console names are independent<a class="headerlink" href="#diagnostic-and-console-names-are-independent" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">getLogger(&quot;app&quot;)</span></code> and <code class="docutils literal notranslate"><span class="pre">getConsole(&quot;app&quot;)</span></code> return separate objects. Acquiring
+a console does not change the diagnostic logger’s handlers, threshold, or
+propagation. Repeated console acquisition with the same name returns the same
+console and does not add duplicate stdout handlers. Console records keep the
+requested name, but do not propagate into root diagnostics or file logging.</p>
+<p>A new console with no explicit level follows <code class="docutils literal notranslate"><span class="pre">set_level()</span></code> and the root logger’s
+level. <code class="docutils literal notranslate"><span class="pre">getConsole(&quot;app&quot;,</span> <span class="pre">level=DEBUG)</span></code> selects an independent threshold;
+reacquiring it without a level preserves that choice. <code class="docutils literal notranslate"><span class="pre">console.setLevel()</span></code> also
+works. Standard <code class="docutils literal notranslate"><span class="pre">logging.disable()</span></code> and <code class="docutils literal notranslate"><span class="pre">console.disabled</span></code> remain effective.
+Exact protocol results should use the plain writer so quiet diagnostic levels
+cannot suppress them or add a prefix.</p>
+</section>
+<section id="caller-owned-output">
+<h2>Caller-owned output<a class="headerlink" href="#caller-owned-output" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">scitex_logging</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">slog</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"result.jsonl"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">destination</span><span class="p">:</span>
+    <span class="n">slog</span><span class="o">.</span><span class="n">getPlainConsole</span><span class="p">()</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s1">'{"ok": true}'</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">destination</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The existing default remains stdout with immediate flushing. Both <code class="docutils literal notranslate"><span class="pre">stream</span></code> and
+<code class="docutils literal notranslate"><span class="pre">flush</span></code> are optional keyword arguments; the <code class="docutils literal notranslate"><span class="pre">write</span></code> and <code class="docutils literal notranslate"><span class="pre">print</span></code> method aliases
+have the same behavior. The writer does not open, close, or otherwise take
+ownership of the supplied stream. Write and flush errors propagate to the
+caller. Foreign wrappers retain their own behavior, even if they expose an
+attribute named <code class="docutils literal notranslate"><span class="pre">original_stdout</span></code>.</p>
+</section>
+<section id="import-and-explicit-configuration">
+<h2>Import and explicit configuration<a class="headerlink" href="#import-and-explicit-configuration" title="Link to this heading"></a></h2>
+<p>Import installs default console/file handlers only when root has no handlers.
+An already configured root retains its handlers, handler thresholds, root
+threshold, and current stdout capture. The root still gains SciTeX’s
+<code class="docutils literal notranslate"><span class="pre">success()</span></code>/<code class="docutils literal notranslate"><span class="pre">fail()</span></code> methods, preserving <code class="docutils literal notranslate"><span class="pre">getLogger()</span></code> without a name.</p>
+<p>An explicit <code class="docutils literal notranslate"><span class="pre">configure(...)</span></code> call opts into replacing the process-wide root
+configuration. Replaced handlers are closed, including their open file streams.
+<code class="docutils literal notranslate"><span class="pre">capture_prints=True</span></code> enables SciTeX’s stdout capture; <code class="docutils literal notranslate"><span class="pre">capture_prints=False</span></code>
+disables its global capture. An explicit configuration call is consequently
+best placed in the application’s entry point rather than an imported library.</p>
+</section>
+<section id="capture-and-redirects">
+<h2>Capture and redirects<a class="headerlink" href="#capture-and-redirects" title="Link to this heading"></a></h2>
+<p>SciTeX’s print capture forwards raw stdout and also creates diagnostic records.
+Both formatted and plain console writers bypass every SciTeX capture wrapper,
+so a result reaches stdout without being copied into diagnostics. They resolve
+the current destination on each write and preserve caller-owned redirects.</p>
+<p>Capture refreshes its forwarding destination whenever it is activated again.
+Stopping capture restores stdout only if that capture currently owns stdout;
+it never replaces another active redirect. A redirect can later restore an
+inactive capture wrapper. That wrapper forwards bytes without creating records,
+and can be safely stopped or restarted. Distinct nested captures and repeated
+contexts using the same capture restore the appropriate outer destination.</p>
+<p>Capture operates on the process-wide <code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code>, not a thread-local stream.
+Coordinate capture and redirects in the application, and stop a capture that
+targets a temporary stream before closing that stream. Captured raw writes are
+recorded as write fragments, rather than assembled complete lines; distinct
+nested active captures each record the raw writes that pass through them.</p>
+</section>
+<section id="remaining-formatting-limits">
+<h2>Remaining formatting limits<a class="headerlink" href="#remaining-formatting-limits" title="Link to this heading"></a></h2>
+<p>The console formatter currently checks stdout’s terminal status even when the
+diagnostic handler writes to stderr. A terminal stdout paired with redirected
+stderr can therefore put ANSI color codes into the redirected diagnostic
+stream. The existing force-color environment settings also take precedence
+without implementing <code class="docutils literal notranslate"><span class="pre">NO_COLOR</span></code>. The plain writer remains prefix-free and
+color-free regardless of these formatter settings.</p>
+<p>The console formatter modifies its input record’s message when applying
+indentation. Multiple console formatters handling the same record can therefore
+accumulate indentation, and a later foreign handler can observe that modified
+message. These formatting limitations are separate from console destination
+isolation and capture ownership; they are not changed by this update.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="logging-auditor.html" class="btn btn-neutral float-left" title="Logging output auditor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api/scitex_logging.html" class="btn btn-neutral float-right" title="scitex_logging" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024-2026, Yusuke Watanabe.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

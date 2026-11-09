@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pytest
 
+from .._source_alias import _alias
+
 from scitex_logging._hook_rules import provide
 from scitex_logging._output._detector import find_output_calls
 from scitex_logging._output._hook import check_payload
@@ -118,3 +120,79 @@ def test_leaf_provider_ships_both_hook_bindings():
     bindings = [(r.provider, r.severity, (root / r.script).is_file()) for r in rules]
     # Assert
     assert bindings == [("scitex-logging", "deny", True)] * 2
+
+
+@pytest.mark.parametrize("kind", ["directory", "file"])
+@pytest.mark.parametrize("tool", ["Write", "Edit"])
+def test_native_source_alias_rejects_output_without_changing_file(tmp_path, kind, tool):
+    # Arrange
+    alias, source = _alias(tmp_path, kind)
+    data = {
+        "Write": {"file_path": str(alias), "content": "print('raw')\n"},
+        "Edit": {
+            "file_path": str(alias),
+            "old_string": "value = 1",
+            "new_string": "print('raw')",
+        },
+    }[tool]
+    # Act
+    findings = check_payload(
+        {"cwd": str(tmp_path), "tool_name": tool, "tool_input": data}
+    )
+    # Assert
+    assert (
+        len(findings),
+        "PS-220" in "".join(findings),
+        source.read_text(),
+        alias.is_symlink(),
+    ) == (
+        1,
+        True,
+        "value = 1\n",
+        kind == "file",
+    )
+
+
+def test_unrelated_non_source_file_remains_outside_scope(tmp_path):
+    # Arrange
+    path = tmp_path / "notes.py"
+    # Act
+    findings = check_payload(
+        {
+            "tool_name": "Write",
+            "tool_input": {
+                "file_path": str(path),
+                "content": "print('outside source')",
+            },
+        }
+    )
+    # Assert
+    assert findings == [] and not path.exists()
+
+
+@pytest.mark.parametrize("filename", ["cycle.py", "cycle/module.py"])
+def test_unresolvable_alias_fails_closed_in_actual_hook_process(tmp_path, filename):
+    # Arrange
+    loop = tmp_path / Path(filename).parts[0]
+    loop.symlink_to(loop)
+    path = tmp_path / filename
+    payload = {
+        "cwd": str(tmp_path),
+        "tool_name": "Write",
+        "tool_input": {
+            "file_path": str(path),
+            "content": "print('raw')",
+        },
+    }
+    package = Path(__file__).resolve().parents[3]
+    environment = dict(os.environ, HOME=str(tmp_path), PYTHONPATH=str(package / "src"))
+    # Act
+    result = subprocess.run(
+        [sys.executable, "-m", "scitex_logging._output._hook"],
+        input=json.dumps(payload),
+        env=environment,
+        capture_output=True,
+        text=True,
+    )
+    # Assert
+    assert result.returncode == 2 and "PS-220" in result.stderr and not result.stdout
