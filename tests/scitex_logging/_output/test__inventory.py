@@ -86,10 +86,13 @@ def test_git_inventory_excludes_dependencies_but_keeps_all_authored_source(tmp_p
         "byte\udcff.py",
     ],
 )
-def test_git_paths_preserve_unusual_filenames_and_deduplicate(tmp_path, name):
+def test_git_paths_preserve_unusual_filenames_and_deduplicate(tmp_path, name, request):
     # Arrange
     _init(tmp_path)
     path = _write(tmp_path, "src/pkg/" + name)
+    # Keep all filename cases, but let Python remove its own raw-byte filename.
+    # Runner cleanup can decode byte 0xff as a replacement character and miss it.
+    request.addfinalizer(lambda: path.unlink(missing_ok=True))
     _git(tmp_path, "add", str(path))
     path.write_text("print('modified')\n")
     # Act

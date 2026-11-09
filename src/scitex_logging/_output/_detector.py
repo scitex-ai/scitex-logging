@@ -10,6 +10,7 @@ outside its proof.
 from __future__ import annotations
 
 import ast
+import stat
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -379,11 +380,33 @@ def _src_files(repo: Path) -> list[Path]:
 
 
 def source_repo(filepath: str | Path) -> Path | None:
-    """Locate source scope lexically, preserving symlinks for ownership proof."""
+    """Locate lexical or aliased source scope without granting path ownership.
+
+    Callers retain the original filepath for exact backend allowance checks.
+    Resolving an alias here only establishes that a source edit is in scope.
+    """
     if str(filepath).startswith("<"):
         return None
     path = Path(filepath).absolute()
     for parent in path.parents:
+        if parent.name == "src":
+            return parent.parent
+    try:
+        target = path.resolve()
+    except RuntimeError as error:
+        # Python <3.13 reports symlink loops as RuntimeError, not OSError.
+        # The native hook's existing error boundary must refuse this edit.
+        raise OSError("cannot resolve source scope") from error
+    # Non-strict resolution can leave a loop unresolved on newer Python.
+    # Missing targets are valid for Write; remaining symlinks are not.
+    for part in (target, *target.parents):
+        try:
+            info = part.lstat()
+        except FileNotFoundError:
+            continue
+        if stat.S_ISLNK(info.st_mode):
+            raise OSError("cannot resolve source scope")
+    for parent in target.parents:
         if parent.name == "src":
             return parent.parent
     return None
@@ -408,7 +431,6 @@ def find_output_calls(
         site
         for site in calls
         if not (
-            backend_owner
-            and is_logging_backend_call(repo, filepath, tree, site.call)
+            backend_owner and is_logging_backend_call(repo, filepath, tree, site.call)
         )
     ]

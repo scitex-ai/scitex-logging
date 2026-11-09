@@ -9,6 +9,7 @@ import pytest
 
 from scitex_logging._output._auditor import _output_calls, _src_files, find_output_calls
 from scitex_logging._output._backend import owns_logging_backend
+from scitex_logging._output._detector import source_repo
 
 
 @pytest.mark.parametrize(
@@ -269,6 +270,26 @@ def test_exact_owner_backend_operations_are_allowed(tmp_path, filename, source):
     sites = find_output_calls(source, repo=tmp_path, filepath=path)
     # Assert
     assert sites == []
+
+
+def test_source_alias_does_not_grant_backend_statement_allowance(tmp_path):
+    # Arrange
+    package = _owner(tmp_path)
+    path = package / "_diagnostic.py"
+    text = "import logging\ndef getDiagnostic(name):\n    logger = logging.getLogger(name)\n"
+    path.write_text(text)
+    (tmp_path / "legacy").symlink_to(package, target_is_directory=True)
+    alias = tmp_path / "legacy/_diagnostic.py"
+    # Act
+    repo = source_repo(alias)
+    canonical = find_output_calls(text, repo=tmp_path, filepath=path)
+    aliased = find_output_calls(text, repo=repo, filepath=alias)
+    # Assert
+    assert (repo, canonical, [site.kind for site in aliased]) == (
+        tmp_path,
+        [],
+        ["stdlib logging.getLogger"],
+    )
 
 
 @pytest.mark.parametrize(
