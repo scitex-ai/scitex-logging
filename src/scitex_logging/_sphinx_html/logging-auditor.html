@@ -239,7 +239,7 @@
 source. SciTeX dev discovers the provider, invokes it, and reports findings.
 The rule definition and detector live in this package, so project audits and
 the AST linter apply the same policy.</p>
-<p>The wheel advertises two entry points:</p>
+<p>The wheel registers these policy providers:</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Group</p></th>
@@ -256,6 +256,10 @@ the AST linter apply the same policy.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">scitex-logging</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">scitex_logging._linter_plugin:get_plugin</span></code></p></td>
 </tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">scitex_dev.hooks</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scitex-logging</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">scitex_logging._hook_rules:provide</span></code></p></td>
+</tr>
 </tbody>
 </table>
 <p>The project factory supplies rule five-tuples and a checker accepting
@@ -264,6 +268,11 @@ the AST linter apply the same policy.</p>
 plugin activates. Its checker opts into filepath metadata with
 <code class="docutils literal notranslate"><span class="pre">accepts_filepath=True</span></code>; existing two-argument plugins retain their interface.
 Importing SciTeX logging or its project factory does not import SciTeX dev.</p>
+<p>The hook factory supplies the pre-tool output-policy check and the post-tool
+changed-source check. It imports Dev’s <code class="docutils literal notranslate"><span class="pre">HookRule</span></code> contract when activated and
+requires the logging development extra. Provider discovery does not install
+bindings in an agent’s harness or grant permission to execute hook commands.
+The post-tool check reports completed writes; it cannot undo them.</p>
 <p>Every authored Python file under <code class="docutils literal notranslate"><span class="pre">src/</span></code> is in scope, including bundled directories
 named <code class="docutils literal notranslate"><span class="pre">tests</span></code>, <code class="docutils literal notranslate"><span class="pre">scripts</span></code>, <code class="docutils literal notranslate"><span class="pre">examples</span></code>, or <code class="docutils literal notranslate"><span class="pre">docs</span></code>. Repository directories outside
 <code class="docutils literal notranslate"><span class="pre">src/</span></code> are outside this source policy. Builtin <code class="docutils literal notranslate"><span class="pre">print</span></code>, <code class="docutils literal notranslate"><span class="pre">pprint</span></code>, Rich console

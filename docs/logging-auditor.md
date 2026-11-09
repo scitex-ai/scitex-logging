@@ -5,12 +5,13 @@ source. SciTeX dev discovers the provider, invokes it, and reports findings.
 The rule definition and detector live in this package, so project audits and
 the AST linter apply the same policy.
 
-The wheel advertises two entry points:
+The wheel registers these policy providers:
 
 | Group | Name | Factory |
 | --- | --- | --- |
 | `scitex_dev.audit.project` | `scitex-logging` | `scitex_logging._audit_plugin:get_plugin` |
 | `scitex_dev.linter.plugins` | `scitex-logging` | `scitex_logging._linter_plugin:get_plugin` |
+| `scitex_dev.hooks` | `scitex-logging` | `scitex_logging._hook_rules:provide` |
 
 The project factory supplies rule five-tuples and a checker accepting
 `(repo, violation_class, out, *, config=None)`. The linter factory constructs
@@ -18,6 +19,12 @@ The project factory supplies rule five-tuples and a checker accepting
 plugin activates. Its checker opts into filepath metadata with
 `accepts_filepath=True`; existing two-argument plugins retain their interface.
 Importing SciTeX logging or its project factory does not import SciTeX dev.
+
+The hook factory supplies the pre-tool output-policy check and the post-tool
+changed-source check. It imports Dev's `HookRule` contract when activated and
+requires the logging development extra. Provider discovery does not install
+bindings in an agent's harness or grant permission to execute hook commands.
+The post-tool check reports completed writes; it cannot undo them.
 
 Every authored Python file under `src/` is in scope, including bundled directories
 named `tests`, `scripts`, `examples`, or `docs`. Repository directories outside

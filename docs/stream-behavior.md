@@ -5,12 +5,17 @@ Choose the writer according to what the output means:
 | Writer | Destination | Format and filtering |
 | --- | --- | --- |
 | `getLogger(name)` | Root diagnostics: stderr and the log file by default | Level prefix; logger and configured handler thresholds apply |
+| `getDiagnostic(name)` | Current stderr, independent of root handlers | Canonical SciTeX prefix; normal logger thresholds apply; no propagation to root handlers |
 | `getConsole(name)` | Current stdout | Same level prefix; a new console inherits the root threshold unless an explicit level is supplied |
 | `getPlainConsole(name).emit(text)` | Current stdout, or the supplied `stream` | Exact text plus one newline; no prefix, diagnostic capture, or level filtering |
 
 An embedding application's configured diagnostic handlers remain in control.
 For example, a root handler deliberately writing to stdout will continue to do
 so. SciTeX's default stderr destination applies when SciTeX configures the root.
+Use `getDiagnostic(name)` when an embedded producer needs canonical stderr
+without changing the application's handlers. Repeated acquisition does not
+stack handlers or reset an explicitly selected level. This channel does not
+forward records to the application's file handlers.
 
 ## Diagnostic and console names are independent
 
