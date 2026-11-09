@@ -248,11 +248,15 @@
 <td><p>Root diagnostics: stderr and the log file by default</p></td>
 <td><p>Level prefix; logger and configured handler thresholds apply</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">getConsole(name)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">getDiagnostic(name)</span></code></p></td>
+<td><p>Current stderr, independent of root handlers</p></td>
+<td><p>Canonical SciTeX prefix; normal logger thresholds apply; no propagation to root handlers</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">getConsole(name)</span></code></p></td>
 <td><p>Current stdout</p></td>
 <td><p>Same level prefix; a new console inherits the root threshold unless an explicit level is supplied</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">getPlainConsole(name).emit(text)</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">getPlainConsole(name).emit(text)</span></code></p></td>
 <td><p>Current stdout, or the supplied <code class="docutils literal notranslate"><span class="pre">stream</span></code></p></td>
 <td><p>Exact text plus one newline; no prefix, diagnostic capture, or level filtering</p></td>
 </tr>
@@ -260,7 +264,11 @@
 </table>
 <p>An embedding application’s configured diagnostic handlers remain in control.
 For example, a root handler deliberately writing to stdout will continue to do
-so. SciTeX’s default stderr destination applies when SciTeX configures the root.</p>
+so. SciTeX’s default stderr destination applies when SciTeX configures the root.
+Use <code class="docutils literal notranslate"><span class="pre">getDiagnostic(name)</span></code> when an embedded producer needs canonical stderr
+without changing the application’s handlers. Repeated acquisition does not
+stack handlers or reset an explicitly selected level. This channel does not
+forward records to the application’s file handlers.</p>
 <section id="diagnostic-and-console-names-are-independent">
 <h2>Diagnostic and console names are independent<a class="headerlink" href="#diagnostic-and-console-names-are-independent" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">getLogger(&quot;app&quot;)</span></code> and <code class="docutils literal notranslate"><span class="pre">getConsole(&quot;app&quot;)</span></code> return separate objects. Acquiring

@@ -1,7 +1,7 @@
 ---
 name: scitex-logging
 description: |
-  [WHAT] Enhanced Python logging + warnings + 30+ class `SciTeXError` exception hierarchy — stdlib-compatible wrapper with SUCCESS/FAIL levels, auto file output, and structured category warnings.
+  [WHAT] Stdlib-compatible logging with SUCCESS/FAIL levels, configurable file output, typed SciTeX errors, and structured warnings.
   [WHEN] Getting a logger, logging SUCCESS/FAIL, teeing stdout to a log file, raising a typed SciTeX error, emitting a deprecation/data-loss warning, or configuring via `SCITEX_LOGGING_LEVEL`.
   [HOW] `from scitex_logging import getLogger, configure, Tee, SciTeXError, warn_deprecated, ...` — drop-in stdlib replacement.
 tags: [scitex-logging]
@@ -16,7 +16,8 @@ interfaces:
 
 # scitex-logging
 
-Auto-configured drop-in extension of `logging`:
+Stdlib-compatible extension of `logging`. Import configures an unconfigured
+root; an embedding application's existing handlers and threshold are retained.
 
 ## Installation & import (two equivalent paths)
 
@@ -41,10 +42,14 @@ See [../../general/02_interface-python-api.md] for the ecosystem-wide
 rule and empirical verification table.
 
 - Adds `SUCCESS` and `FAIL` levels on top of DEBUG/INFO/WARNING/ERROR/CRITICAL.
-- File logging is on by default; log path via `get_log_path()`.
+- Initial root setup enables file logging when its file-logging gate permits
+  it; importing into an already configured application does not add a file
+  handler. Use `configure()` explicitly to replace root configuration.
+  Inspect the configured log path with `get_log_path()`.
 - Ships a SciTeX-wide **exception hierarchy** (`SciTeXError` and ~30 subclasses)
   plus a `warnings`-style API (`SciTeXWarning` etc.).
-- Env var `SCITEX_LOGGING_LEVEL` picks the default level at import time.
+- `SCITEX_LOGGING_LEVEL` selects the startup level when SciTeX initializes
+  the root; it does not override an embedding application's existing level.
 
 ## Sub-skills
 
