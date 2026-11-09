@@ -85,3 +85,6 @@ The project auditor discovers tracked and nonignored untracked Python in
 installed dependencies are excluded using Git's rules; non-Git source archives
 retain the full source walk. Native hooks keep their proposed-target or
 changed-file scope, and lexical paths preserve backend ownership checks.
+Native hooks and the linter also recognize aliases into `src/`, including
+legacy `apps` symlinks. The original path still controls backend allowances;
+resolving the target does not grant them. Unresolvable native edits are refused.

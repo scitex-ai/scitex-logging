@@ -7,6 +7,10 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+- Enforce PS-220 for native edits and linter checks through source aliases,
+  including legacy `apps` paths pointing into `src`. Keep the original path
+  for strict logging-backend ownership checks and refuse unresolved aliases.
+
 - Isolate the file-logging gate in configuration tests so a disable control
   cannot change later handler/path controls under distributed scheduling.
 

@@ -36,6 +36,11 @@ file under `src/` remains in scope. Inventory paths stay lexical so symlinks
 cannot grant logger-backend ownership. Shell hooks retain changed-file scope;
 native edits check the proposed target rather than the entire inventory.
 
+Native hooks and the linter also check files reached through aliases into
+`src/`, such as a legacy `apps` symlink. Resolving the source scope does not
+grant backend ownership: allowance checks retain the original path. Native
+hooks refuse an edit when its alias cannot be resolved.
+
 Choose the logging primitive that matches the destination:
 
 | Destination | Primitive |
