@@ -7,6 +7,12 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-11-09
+
+### Fixed
+
+- Include the canonical logging policy and stream guide in bundled web docs;
+  distinguish application handlers from isolated stderr diagnostics.
 - Give coverage subprocesses independent data files and a valid single-line
   startup binding, preventing SQLite collisions under parallel tests.
 - Enforce PS-220 for native edits and linter checks through source aliases,

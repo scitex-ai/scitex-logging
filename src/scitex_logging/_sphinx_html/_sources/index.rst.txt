@@ -13,6 +13,8 @@ SciTeX Logging
 
    installation
    quickstart
+   logging-auditor
+   stream-behavior
 
 .. toctree::
    :maxdepth: 2
