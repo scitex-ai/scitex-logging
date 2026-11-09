@@ -1,7 +1,7 @@
 ---
 name: scitex-logging
 description: |
-  [WHAT] Enhanced Python logging + warnings + 30+ class `SciTeXError` exception hierarchy — stdlib-compatible wrapper with SUCCESS/FAIL levels, auto file output, and structured category warnings.
+  [WHAT] Stdlib-compatible logging with SUCCESS/FAIL levels, configurable file output, typed SciTeX errors, and structured warnings.
   [WHEN] Getting a logger, logging SUCCESS/FAIL, teeing stdout to a log file, raising a typed SciTeX error, emitting a deprecation/data-loss warning, or configuring via `SCITEX_LOGGING_LEVEL`.
   [HOW] `from scitex_logging import getLogger, configure, Tee, SciTeXError, warn_deprecated, ...` — drop-in stdlib replacement.
 tags: [scitex-logging]
