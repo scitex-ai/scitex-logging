@@ -24,6 +24,26 @@ from ._logger import setup_logger_class
 _GLOBAL_LEVEL = None
 _FILE_LOGGING_ENABLED = True  # Enable file logging by default
 
+# Third-party loggers that emit one INFO record per operation. SQLAlchemy
+# with echo=False defers to the logger's effective level, so once
+# configure() puts root at INFO every SQL statement, BEGIN and COMMIT is
+# logged. configure() keeps them at WARNING unless the application has
+# already chosen a level for them (SQLAlchemy's echo=True sets one).
+_CHATTY_THIRD_PARTY_LOGGERS = (
+    "sqlalchemy",
+    "sqlalchemy.engine",
+    "sqlalchemy.engine.Engine",
+    "sqlalchemy.pool",
+)
+
+
+def _quiet_chatty_third_party_loggers():
+    """Hold known per-operation third-party loggers at WARNING."""
+    for name in _CHATTY_THIRD_PARTY_LOGGERS:
+        third_party = logging.getLogger(name)
+        if third_party.level == logging.NOTSET:
+            third_party.setLevel(WARNING)
+
 
 def set_level(level: Union[str, int]):
     """Set global log level for all SciTeX loggers."""
@@ -133,6 +153,7 @@ def configure(
         handlers=handlers,
         force=True,  # Force reconfiguration
     )
+    _quiet_chatty_third_party_loggers()
 
     # Enable print capture if requested
     if capture_prints:
