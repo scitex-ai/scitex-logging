@@ -7,6 +7,20 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.7] - 2026-11-19
+
+0.2.6 was promoted to `main` but never tagged or published; its changes
+(listed under 0.2.6 below) ship for the first time in 0.2.7.
+
+### Fixed
+
+- `configure()` holds the `sqlalchemy`, `sqlalchemy.engine`,
+  `sqlalchemy.engine.Engine` and `sqlalchemy.pool` loggers at WARNING when it
+  raises the root logger to INFO, so SQL statements, BEGIN and COMMIT are not
+  logged. A level the application already set (SQLAlchemy's `echo=True` sets
+  one) is left alone. This takes over from the scitex umbrella, which set
+  these levels at `import scitex` (PS-220).
+
 ## [0.2.6] - 2026-11-09
 
 ### Fixed

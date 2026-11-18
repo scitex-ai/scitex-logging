@@ -311,6 +311,57 @@ class TestConfigure:
         assert handler_count == 0
 
 
+class TestConfigureQuietsChattyThirdPartyLoggers:
+    """configure() puts root at INFO, so it holds SQLAlchemy's loggers at WARNING."""
+
+    _NAMES = (
+        "sqlalchemy",
+        "sqlalchemy.engine",
+        "sqlalchemy.engine.Engine",
+        "sqlalchemy.pool",
+    )
+
+    def setup_method(self):
+        """Start every SQLAlchemy logger unset, as on a fresh interpreter."""
+        self._saved = {n: logging.getLogger(n).level for n in self._NAMES}
+        for name in self._NAMES:
+            logging.getLogger(name).setLevel(logging.NOTSET)
+
+    def teardown_method(self):
+        """Restore the levels and drop the handlers configure() installed."""
+        for name, level in self._saved.items():
+            logging.getLogger(name).setLevel(level)
+        root = logging.getLogger()
+        for handler in root.handlers[:]:
+            root.removeHandler(handler)
+
+    @staticmethod
+    def _configure_info():
+        from scitex_logging._config import configure
+
+        configure(
+            level="info", enable_console=False, enable_file=False, capture_prints=False
+        )
+
+    @pytest.mark.parametrize("name", _NAMES)
+    def test_configure_sets_unset_sqlalchemy_logger_to_warning(self, name):
+        # Arrange
+        self._configure_info()
+        # Act
+        level = logging.getLogger(name).level
+        # Assert
+        assert level == logging.WARNING
+
+    def test_configure_keeps_a_level_the_application_already_chose(self):
+        # Arrange — SQLAlchemy's echo=True sets INFO on this logger itself.
+        logging.getLogger("sqlalchemy.engine.Engine").setLevel(logging.INFO)
+        # Act
+        self._configure_info()
+        level = logging.getLogger("sqlalchemy.engine.Engine").level
+        # Assert
+        assert level == logging.INFO
+
+
 class TestGetLogPath:
     """Test get_log_path function."""
 

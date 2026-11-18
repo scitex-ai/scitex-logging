@@ -32,6 +32,9 @@ _BACKEND_STATEMENTS = {
         "root_logger = logging.getLogger()",
         "logging.basicConfig(level=level, handlers=handlers, force=True)",
     ),
+    ("_config.py", ("_quiet_chatty_third_party_loggers",)): (
+        "third_party = logging.getLogger(name)",
+    ),
     ("_config.py", ("get_log_path",)): (
         "for handler in logging.getLogger().handlers:\n"
         "    if hasattr(handler, 'baseFilename'):\n"
