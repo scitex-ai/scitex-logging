@@ -14,6 +14,7 @@ def get_plugin() -> dict:
     # Guarded: lean installs run without scitex-dev; the Dev loader warns
     # and continues without our rules when activation fails here.
     try:
+        from scitex_dev.linter import spi
         from scitex_dev.linter.spi import Issue, Rule
     except ImportError as exc:
         raise ImportError(
@@ -66,10 +67,10 @@ def get_plugin() -> dict:
 
     rules = [rule]
     checkers = [LoggingOutputChecker]
-    i007 = _stdlib_logging_rule(Rule)
+    i007 = _stdlib_logging_rule(spi)
     if i007 is not None:
         rules.append(i007)
-        checkers.append(_bind_stdlib_logging_checker(i007))
+        checkers.append(_bind_stdlib_logging_checker(i007, spi))
     return {
         "rules": rules,
         "call_rules": {},
@@ -92,7 +93,7 @@ I007_SPEC = dict(
 )
 
 
-def _stdlib_logging_rule(Rule):
+def _stdlib_logging_rule(spi):
     """STX-I007, declared only when the installed engine yields it to us.
 
     scitex-logging does not pin scitex-dev, and an engine that predates the
@@ -101,15 +102,12 @@ def _stdlib_logging_rule(Rule):
     handover table names scitex-logging as its owner; otherwise the engine
     keeps emitting its own copy (identical behaviour either way).
     """
-    from scitex_dev.linter import spi
-
     if getattr(spi, "HANDOVER", {}).get("STX-I007") != "scitex-logging":
         return None
-    return Rule(**I007_SPEC)
+    return spi.Rule(**I007_SPEC)
 
 
-def _bind_stdlib_logging_checker(rule):
-    from scitex_dev.linter import spi
+def _bind_stdlib_logging_checker(rule, spi):
 
     class StdlibLoggingImportChecker(ast.NodeVisitor):
         category = "import"

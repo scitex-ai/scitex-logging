@@ -24,7 +24,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-class _Checker(_bind_stdlib_logging_checker(spi.Rule(**I007_SPEC))):
+class _Checker(_bind_stdlib_logging_checker(spi.Rule(**I007_SPEC), spi)):
     # The rule's `requires` (umbrella scitex) may be absent here.
     available = {"scitex": True}
 
