@@ -7,6 +7,14 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+- **Linter: `STX-I007` (`import logging`) is** now owned and emitted by this package, moved
+  from the scitex-dev engine. Ids, severities, messages and gates are
+  unchanged, so findings are unchanged; this was proven identical with
+  `scitex-dev linter fingerprint` on the SciTeX examples and
+  paper-scitex-clew corpus. The rules are declared only when the installed
+  scitex-dev (>= 0.65.0) names this package as their owner. With an older
+  engine, the engine keeps emitting its own copy.
+
 ## [0.2.7] - 2026-11-19
 
 0.2.6 was promoted to `main` but never tagged or published; its changes
