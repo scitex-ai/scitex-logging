@@ -7,6 +7,10 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-19
+
+### Added
+
 - **Linter: `STX-I007` (`import logging`) is** now owned and emitted by this package, moved
   from the scitex-dev engine. Ids, severities, messages and gates are
   unchanged, so findings are unchanged; this was proven identical with
