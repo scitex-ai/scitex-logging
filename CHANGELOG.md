@@ -7,6 +7,10 @@ versions follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+
+- Configure subprocess coverage declaratively via coverage `patch = ["subprocess"]`; test collection no longer writes `.pth` files into site-packages or overwrites caller-owned coverage environment variables.
+
 ## [0.3.0] - 2026-11-19
 
 ### Added
